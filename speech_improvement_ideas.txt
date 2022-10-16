@@ -1,0 +1,3 @@
+1. limit dictionary so the machine cannot err?
+2. use pocketsphinx or speech_recognition? are they are same?
+3. actually train the machine using different wav files?
