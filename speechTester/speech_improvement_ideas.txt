@@ -22,4 +22,5 @@
 3. actually train the machine using different wav files?
     * yeah you could + it is a good idea
     * Training an ARPA model with SRILM
-    * 
+    * Training Video: https://www.youtube.com/watch?v=IAHH6-t9jK0 
+    * Already trained stuff? https://cmusphinx.github.io/data/chess/ExtendedEssay.pdf 
