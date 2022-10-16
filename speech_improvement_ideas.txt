@@ -1,3 +1,25 @@
 1. limit dictionary so the machine cannot err?
+    * https://stackoverflow.com/questions/41006074/how-to-change-python-pocket-sphinx-dictionary 
+    * Assembly AI video?: https://www.youtube.com/watch?v=mYUyaKmvu6Y 
+    * The recognizer looks for a word in both the dictionary and the language model. 
+    * Without the language model, a word will not be recognized, 
+    * even if it is present in the dictionary.
+    # I wonder  if it is possible that limiting words in the dictionary will not do much 
+    # to help our issue? Maybe doing this is gonna be better? 
+
+
+    The threshold must be specified for every keyphrase. 
+    For shorter keyphrases you can use smaller thresholds like 1e-1, 
+    for longer keyphrases the threshold must be bigger, up to 1e-50. 
+    If your keyphrase is very long – larger than 10 syllables – 
+    it is recommended to split it and spot for parts separately. 
+    The threshold must be tuned to balance between false alarms and missed detections. 
+    The best way to do this is to use a prerecorded audio file. 
+    The common tuning process is the following: 
+    https://cmusphinx.github.io/wiki/tutoriallm/
+
 2. use pocketsphinx or speech_recognition? are they are same?
 3. actually train the machine using different wav files?
+    * yeah you could + it is a good idea
+    * Training an ARPA model with SRILM
+    * 
