@@ -12,6 +12,8 @@ To do:
     * Nc3 -> 
         * where is N or c3? piece/square locator 
         * generate the path to move the piece 
+        actually move the piece w the stuff
+* integrate the program with the LCD 
 
 
 Completed:
