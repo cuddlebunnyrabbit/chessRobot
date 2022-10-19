@@ -1,0 +1,15 @@
+Qxb7 
+Qbd7
+Pb7
+b7
+Pawn b8
+Knight x h3
+Castle
+Long castle 
+kingside castle 
+pawn c8 promote rook 
+xc8 promote queen 
+
+Answer: 
+q xb7 
+qbd7 
