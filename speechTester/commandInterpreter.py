@@ -1,59 +1,30 @@
-#from distutils.log import error
+from phrase import *
 
-replacement_dictionary = { #contain numbers + pieces to be replaced for notation
-    "queen": "Q",
-    "king": "K",
-    "pawn": "", #removes pawn 
-    "knight": "N",
-    "rook": "R",
-    "bishop": "B"
-    "one": "1",
-    "two": "2",
-    "three": "3",
-    "four": "4",
-    "five": "5",
-    "six": "6",
-    "seven": "7",
-    "eight": "8",
-    "promote": "=" #this is the correct way to promote 
-}
-
-
-special_dictionary = { #contain numbers + pieces to be returned immediately
-    "longcastle": "0-0-0",
-    "shortcastle": "0-0",
-    "kingsidecastle": "0-0",
-    "queensidecastle": "0-0-0",
-    
-
-}
-
-def parse(command):
-
-
+def cleanData(command):
     if len(command) == 0:
-        pass 
-        #throw ZeroDivisionError
+        return None #throw an error situation when you have no data 
+        #is this a good idea? or is this gonna be a silent error?
 
-    # clean the voice_commands
     while " " in command: #remove space
         command = command.replace(' ', '')
     command = command.lower() #lowercase
-    command = command.replace('x', '') #remove capture
+    return(command)
+    #cannot remove capture! pychess accepts both commands with or without x and it works!
+    #wait check your assumptions first 
 
-    for key in 
+def parse(command):
+    for phrase in key_phrase:
+        if phrase == command: #if it is a special phrase 
+            pass
 
-    for key in pieces_dictionary:
-        if key in command:
-            command = command.replace(key, pieces_dictionary[key])
+    for phrase in special_dictionary:
+        pass
 
-    for key in numbers_dictionary:
-        if key in command:
-            command = command.replace(key, numbers_dictionary[key])
+    for phrase in replacement_dictionary:
+        if phrase in command:
+            command = command.replace(phrase, replacement_dictionary[phrase])
 
     return command
 
-
-print("hello")
-stuff = parse("Bishop   x   Bfour")
+stuff = parse(cleanData("Bishop   x   Bfour"))
 print(stuff)
