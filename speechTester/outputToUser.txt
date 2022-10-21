@@ -1,0 +1,18 @@
+Kerry:
+* Moving piece: number of move + move name 
+* black to move/white to move
+* black win, white win, draw
+* if we have time. check + stuff 
+* error: not a valid move 
+
+
+Chris:
+* play again/reset
+* black resign, white resign 
+* pause + resume (maybe resume is button?)
+* terminate chessbot? (or maybe a button)
+
+Prerequisites: 
+* Cleanup chessbot 
+* create loops that keep running after the start of game 
+* create a new branch to get chris + kerry collaborating
