@@ -23,11 +23,8 @@ replacement_dictionary = { #contain numbers + pieces to be replaced for notation
     "six": "6",
     "seven": "7",
     "eight": "8",
-    "promote": "=" #this is the correct way to promote 
-}
-
-#limitation to say Bishop x c7 not bxc7 
-special_dictionary = { #contain numbers + pieces to be returned immediately
+    "promote": "=", #this is the correct way to promote 
+    #these two terms shouldn't see any replacements
     "longcastle": "0-0-0",
     "shortcastle": "0-0"
 }
