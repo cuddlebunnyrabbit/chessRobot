@@ -6,7 +6,6 @@ class LcdApi:
     """Implements the API for talking with HD44780 compatible character LCDs.
     This class only knows what commands to send to the LCD, and not how to get
     them to the LCD.
-
     It is expected that a derived class will implement the hal_xxx functions.
     """
 
@@ -103,7 +102,6 @@ class LcdApi:
 
     def backlight_on(self):
         """Turns the backlight on.
-
         This isn't really an LCD command, but some modules have backlight
         controls, so this allows the hal to pass through the command.
         """
@@ -112,7 +110,6 @@ class LcdApi:
 
     def backlight_off(self):
         """Turns the backlight off.
-
         This isn't really an LCD command, but some modules have backlight
         controls, so this allows the hal to pass through the command.
         """
@@ -175,21 +172,18 @@ class LcdApi:
 
     def hal_backlight_on(self):
         """Allows the hal layer to turn the backlight on.
-
         If desired, a derived HAL class will implement this function.
         """
         pass
 
     def hal_backlight_off(self):
         """Allows the hal layer to turn the backlight off.
-
         If desired, a derived HAL class will implement this function.
         """
         pass
 
     def hal_write_command(self, cmd):
         """Write a command to the LCD.
-
         It is expected that a derived HAL class will implement this
         function.
         """
@@ -197,7 +191,6 @@ class LcdApi:
 
     def hal_write_data(self, data):
         """Write data to the LCD.
-
         It is expected that a derived HAL class will implement this
         function.
         """
@@ -209,4 +202,4 @@ class LcdApi:
     # of hal_sleep_us in their hal layer and it will be used instead.
     def hal_sleep_us(self, usecs):
         """Sleep for some time (given in microseconds)."""
-        time.sleep_us(usecs)  # NOTE this is not part of Standard Python library, specific hal layers will need to override this
+        time.sleep_us(usecs)  # NOTE this is not part of Standard Python library, specific hal layers will need
