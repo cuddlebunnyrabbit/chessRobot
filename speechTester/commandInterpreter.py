@@ -1,3 +1,4 @@
+from re import S
 from phrase import *
 
 def cleanData(command):
@@ -9,22 +10,21 @@ def cleanData(command):
         command = command.replace(' ', '')
     command = command.lower() #lowercase
     return(command)
-    #cannot remove capture! pychess accepts both commands with or without x and it works!
-    #wait check your assumptions first 
-
+  
 def parse(command):
     for phrase in key_phrase:
-        if phrase == command: #if it is a special phrase 
+        if phrase == command: #if it is a special phrase that would trigger 
+            #some mode change in chessBot. if they will resign game or something
+            
+            #pass the command into the problem
+            #return stop gameOn or something?
             pass
 
-    for phrase in special_dictionary:
-        pass
-
     for phrase in replacement_dictionary:
-        if phrase in command:
+        if phrase in command: #clean up the command into a phrase  
             command = command.replace(phrase, replacement_dictionary[phrase])
 
     return command
 
-stuff = parse(cleanData("Bishop   x   Bfour"))
-print(stuff) 
+stuff = parse(cleanData("queen   x   Bfour promote queen"))
+print(stuff)
