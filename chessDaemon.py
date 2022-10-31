@@ -1,15 +1,13 @@
 import chess
 import sys
-sys.path.append("/Users/kerryhuang/Documents/chessRobot/speechTester/phrase.py")
+sys.path.append("/Users/kerryhuang/Documents/chessRobot/speechTester/")
 #import displaycode.lcd_main as lcd
 
 from log import *
 import speech_recognition as sr
 
-from speechTester.phrase import *
-from speechTester.commandInterpreter import *
-
-#issue of dependency hell! 
+#from speechTester.phrase import *
+from parser import *
 
 
 # when the button is pushed 
@@ -28,17 +26,22 @@ def checkKeyPhrase(phrase):
         lcd.printMessage(["Terminated", "Game"])
         gameOn = False
         listening = False
+        return False
 
     elif command == "resigngame": #no added protection for resign game yet!
         pass
         gameOn = False
+        return False
 
     elif command == "resumegame":
         getFullStatus()
         lcd.printMessage(["Resume Game", getCondensedStatus()])
+        gameOn = True
+        return False
 
     elif command == "pausegame":
         getFullStatus()
+        gameOn = False
         lcd.printMessage(["Paused Game", getCondensedStatus()])
 
     elif command == "resetgame":
@@ -47,6 +50,8 @@ def checkKeyPhrase(phrase):
 
         else:
             lcd.printMessage(["Reseting Game","Plz be patient"])
+
+    return True
 
 while listening:
     data = None
@@ -63,9 +68,12 @@ while listening:
             print('Sorry could not recognize your voice')
     
     command = parse(cleanData(data))
-    checkKeyPhrase(command)
-    makeMove(command)
-    getFullStatus()
+    try:
+        checkKeyPhrase(command)
+        makeMove(command)
+        getFullStatus()
+    except:
+        print("lol no action is done")
     
 #every time at the end you print game and board 
 getFullStatus()

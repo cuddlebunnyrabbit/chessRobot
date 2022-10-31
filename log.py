@@ -25,6 +25,7 @@ def makeMove(move):
         node = node.add_variation(chess.Move.from_uci(move))
         board.push_san(move)
     except UnboundLocalError:
+        print("i was unvboundlocalerror")
         node = game.add_variation(chess.Move.from_uci(move))
         board.push_san(move)
     except: 
