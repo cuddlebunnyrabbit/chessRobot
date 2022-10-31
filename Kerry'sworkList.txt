@@ -1,0 +1,9 @@
+1. What is dependency hell?
+2. How to integrate the voice with everything else? 
+3. Test voice on pi 
+4. Test lcd on pi
+
+
+* What to use gameOn for? 
+* add a draw funcionatliy
+* investigate promotion + resignation or draw uci 
