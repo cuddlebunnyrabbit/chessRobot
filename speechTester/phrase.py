@@ -1,6 +1,7 @@
 key_phrase = [ #must be preceeded by "chessbot so chessbot doesn't get confused"
     "resigngame",
-    "startgame", 
+    "startgame", #i don't think we need this? can we just automatically start
+    #once the button is pushed?
     "terminategame",
     "pausegame",
     "resumegame",

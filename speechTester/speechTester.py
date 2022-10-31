@@ -8,11 +8,10 @@ for phrase in LiveSpeech():
     print(phrase)
 '''
 
-
-
 import speech_recognition as sr
 
 r = sr.Recognizer()
+
 with sr.Microphone() as source:
     print('Speak Anything:')
     audio = r.listen(source)
@@ -23,7 +22,7 @@ with sr.Microphone() as source:
 
     except:
         print('Sorry could not recognize your voice')
-
+        
 
 
 '''

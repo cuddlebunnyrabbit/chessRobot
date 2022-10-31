@@ -12,19 +12,15 @@ def cleanData(command):
     return(command)
   
 def parse(command):
-    for phrase in key_phrase:
-        if phrase == command: #if it is a special phrase that would trigger 
-            #some mode change in chessBot. if they will resign game or something
-            
-            #pass the command into the problem
-            #return stop gameOn or something?
-            pass
-
-    for phrase in replacement_dictionary:
-        if phrase in command: #clean up the command into a phrase  
-            command = command.replace(phrase, replacement_dictionary[phrase])
+    
+    for word in replacement_dictionary:
+        if word in command: #clean up the command into a phrase  
+            command = command.replace(word, replacement_dictionary[word])
 
     return command
 
+
+'''
 stuff = parse(cleanData("queen   x   Bfour promote queen"))
 print(stuff)
+'''
