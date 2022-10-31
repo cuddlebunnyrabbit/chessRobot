@@ -4,16 +4,21 @@ import chess
 board = chess.Board()
 game = chess.pgn.Game()
 
+#print(board.legal_moves)
 board.legal_moves
 chess.Move.from_uci("a8a1") in board.legal_moves
 
-print("fullmovenumber:", board.fullmove_number)
+print("hello")
+print(chess.Move.from_uci("a8a1"))
+
+
+#print("fullmovenumber:", board.fullmove_number)
 node = game.add_variation(board.push("e4"))
 print(chess.Board.turn())
-print("fullmovenumber:", board.fullmove_number)
+#print("fullmovenumber:", board.fullmove_number)
 node = node.add_variation(node.push("d5"))
 print(chess.Board.turn())
-print("fullmovenumber:", board.fullmove_number)
+#print("fullmovenumber:", board.fullmove_number)
 node = node.add_variation(node.push("exd5"))
 print(chess.Board.turn())
 node = node.add_variation(node.push("h5"))
