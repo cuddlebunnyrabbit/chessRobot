@@ -6,7 +6,7 @@ print(sys.path)
 #import displaycode.lcd_main as lcd
 
 from log import *
-import speech_recognition as sr
+#import speech_recognition as sr
 
 #from speechTester.phrase import *
 from parser import *
@@ -14,9 +14,11 @@ from parser import *
 from pocketsphinx import LiveSpeech, get_model_path
 
 
+
+
 # when the button is pushed 
 #need button integration 
-r = sr.Recognizer()
+#r = sr.Recognizer()
 listening = True
 gameOn = True
 
