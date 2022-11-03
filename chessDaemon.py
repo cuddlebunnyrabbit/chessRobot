@@ -1,8 +1,5 @@
 import chess
 import os
-import sys
-sys.path.append("/Users/kerryhuang/Documents/chessRobot/speechTester/")
-print(sys.path)
 #import displaycode.lcd_main as lcd
 
 from log import *
