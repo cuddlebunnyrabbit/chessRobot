@@ -1,6 +1,8 @@
 import chess
+import os
 import sys
 sys.path.append("/Users/kerryhuang/Documents/chessRobot/speechTester/")
+print(sys.path)
 #import displaycode.lcd_main as lcd
 
 from log import *
@@ -8,6 +10,8 @@ import speech_recognition as sr
 
 #from speechTester.phrase import *
 from parser import *
+
+from pocketsphinx import LiveSpeech, get_model_path
 
 
 # when the button is pushed 
@@ -22,29 +26,29 @@ def getFullStatus():
     print(getBoard())
 
 def checkKeyPhrase(phrase):
-    if command == "terminategame": #if i hear terminate
+    if phrase == "terminate": #if i hear terminate
         lcd.printMessage(["Terminated", "Game"])
         gameOn = False
         listening = False
         return False
 
-    elif command == "resigngame": #no added protection for resign game yet!
+    elif phrase == "resign": #no added protection for resign game yet!
         pass
         gameOn = False
         return False
 
-    elif command == "resumegame":
+    elif phrase == "resume":
         getFullStatus()
         lcd.printMessage(["Resume Game", getCondensedStatus()])
         gameOn = True
         return False
 
-    elif command == "pausegame":
+    elif phrase == "pause":
         getFullStatus()
         gameOn = False
         lcd.printMessage(["Paused Game", getCondensedStatus()])
 
-    elif command == "resetgame":
+    elif phrase == "reset":
         if gameOn:
             lcd.printMessage(["Game in progress", "Terminate game?"])
 
