@@ -1,0 +1,5 @@
+(lol u gotta list things like 
+numpy
+opencv
+beautiful soup4)
+.... 
