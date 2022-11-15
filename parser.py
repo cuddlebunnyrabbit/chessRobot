@@ -1,5 +1,6 @@
 #from re import S
 from phrase import *
+from chess import *
 
 def cleanData(command):
     '''
@@ -19,9 +20,24 @@ def parse(command):
 
     for word in replacement_dictionary:
         if word in command: #clean up the command into a phrase  
-            command = command.replace(phrase, replacement_dictionary[phrase])
+            command = command.replace(word, replacement_dictionary[word])
 
-    return command
+    '''
+    print("This is command 1/2 way in the parser: ", command)
+
+    print(SQUARE_NAMES)
+    print(command[:2])
+    print(command[2:])
+    '''
+
+    #checks if the command is an actual valid move 
+    if len(command) != 4:
+        return None
+    
+    elif command[:2] in SQUARE_NAMES and command[2:] in SQUARE_NAMES:
+        return command
+
+    return None
 
 #stuff = parse(cleanData("queen   x   Bfour promote queen"))
 #print(stuff)

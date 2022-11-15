@@ -1,55 +1,79 @@
 import chess
 import chess.pgn
 
-game = chess.pgn.Game()
-node = None
 
-board = chess.Board()
+class Log:
 
-#san() gets the algebranic notation to the node!
-# you can find all the errors the machine can throw 
-def getNextColor():
-    #node.turn() returns the true if the next move is white 
-    #node.turn() returns false if the next move is black
-    try:
-        if node.turn():
-            return "W"
-        return "B"
-    except: 
-        if game.turn():
-            return "W"
-        return "B"
+    def __init__(self):
+        self.game = chess.pgn.Game()
+        self.node = None
+        self.board = chess.Board()
 
-def makeMove(move):
-    try: 
-        node = node.add_variation(chess.Move.from_uci(move))
-        board.push_san(move)
-    except UnboundLocalError:
-        print("i was unvboundlocalerror")
-        node = game.add_variation(chess.Move.from_uci(move))
-        board.push_san(move)
-    except: 
-        print("Unknown error! try again")
-    
-def getTurn(): #increments after black moves. starts at 1
-    return board.fullmove_number
+    #san() gets the algebranic notation to the node!
+    # you can find all the errors the machine can throw 
+    def getNextColor(self):
+        #node.turn() returns the true if the next move is white 
+        #node.turn() returns false if the next move is black
+        try:
+            if self.node.turn():
+                return "W"
+            return "B"
+        except: 
+            if self.game.turn():
+                return "W"
+            return "B"
 
-def getCondensedStatus():
-    return "Next Move:", getTurn(), ".", getNextColor()
+    def makeMove(self, move):
+        if self.node == None:
+            #print("UnboundLocalError! Add first move to game! ")
+            try:
+                #must have push_uci before the node since try will execute all 
+                #commands until it reaches a bad thing and then it suddenly stopps,
+                #leaving the command 1/2 executed and corrupting the data
+                self.board.push_uci(move) 
+                self.node = self.game.add_variation(chess.Move.from_uci(move))
+            except:
+                print("invalid or illegal move. try again")
 
-def getGameStatus():
-    return #who won the game?
+        else:
+            #print("Normal move")
+            try:
+                self.board.push_uci(move)
+                self.node = self.node.add_variation(chess.Move.from_uci(move))
+            except:
+                print("invalid or illegal move. try again")
+            #You gotta check these moves to see if they are valid with try and except 
+        
+    def getTurn(self): #increments after black moves. starts at 1
+        return self.board.fullmove_number
 
-def getBoard():
-    return board
+    def getCondensedStatus(self):
+        return "Next Move:", self.getTurn(), ".", self.getNextColor()
 
-def getGame():
-    return game
+    def getGameStatus(self):
+        return #who won the game?
+
+    def getBoard(self):
+        return self.board
+
+    def getGame(self):
+        return self.game
+
+    #helper method for chessDaemon
+    def getFullStatus(self):
+        print(self.getGame())
+        print(self.getBoard())
 
 
-        #print(getNextMove())
-#makeMove("e2e4")
-#print(getTurn())
-#print(board.push_san("e2e4"))
-#print(board)
-#print(game)
+'''
+l = Log()
+l.makeMove("e2e4")
+l.makeMove("e7e5")
+l.makeMove("d2d7")
+print(l.getBoard())
+print(l.getGame())
+print(l.getTurn())
+print(l.getCondensedStatus())
+'''
+
+
