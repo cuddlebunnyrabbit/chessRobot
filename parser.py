@@ -22,22 +22,18 @@ def parse(command):
         if word in command: #clean up the command into a phrase  
             command = command.replace(word, replacement_dictionary[word])
 
-    '''
-    print("This is command 1/2 way in the parser: ", command)
-
-    print(SQUARE_NAMES)
-    print(command[:2])
-    print(command[2:])
-    '''
-
+    PROMOTABLE_PIECE = ['q', 'r', 'b', 'n']
     #checks if the command is an actual valid move 
-    if len(command) != 4:
-        return None
+    if len(command) == 4:
+        if command[:2] in SQUARE_NAMES and command[2:] in SQUARE_NAMES:
+            return command
     
-    elif command[:2] in SQUARE_NAMES and command[2:] in SQUARE_NAMES:
-        return command
-
+    elif len(command) == 5: 
+        if command[:2] in SQUARE_NAMES and command[2:4] in SQUARE_NAMES:
+            if command[4] in PROMOTABLE_PIECE: 
+                return command
+        
     return None
 
-#stuff = parse(cleanData("queen   x   Bfour promote queen"))
-#print(stuff)
+#checks if the system parses 5 letter commands
+#print(parse(cleanData("e2e8")))

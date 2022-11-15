@@ -65,15 +65,24 @@ class Log:
         print(self.getBoard())
 
 
+#the e1g1 will give the castling! you will not need anything else 
+
 '''
 l = Log()
 l.makeMove("e2e4")
-l.makeMove("e7e5")
-l.makeMove("d2d7")
+l.makeMove("d7d5")
+l.makeMove("e4d5")
+l.makeMove("c7c6")
+l.makeMove("d5c6")
+l.makeMove("c8g4")
+l.makeMove("c6b7")
+l.makeMove("f7f6")
+l.makeMove("b7a8q")
 print(l.getBoard())
 print(l.getGame())
 print(l.getTurn())
 print(l.getCondensedStatus())
 '''
+
 
 
