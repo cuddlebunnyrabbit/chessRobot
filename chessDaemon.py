@@ -1,3 +1,5 @@
+import multiprocessing
+import time
 from chess import *
 #import os
 #import chess.pgn
@@ -25,6 +27,8 @@ class Daemon:
         while self.listening:
             data = self.listen()
 
+            #data = self.listen()
+
             if data != None:
                 #checks if you have key command
                 command = parse(cleanData(data))
@@ -40,12 +44,12 @@ class Daemon:
                                 self.l.makeMove(command)
                                 self.l.getFullStatus()
 
-            if self.review != False: # if the self is reviewing a game
+            if self.gameOn and self.review != False: # if the self is reviewing a game
                 print("I am in reviewing mode")
                 nextmv = next(self.review)
                 print("nextmv: ", nextmv)
                 self.l.makeMove(str(nextmv))
-                #self.l.getFullStatus()
+                self.l.getFullStatus()
                         
             #else:
                 #print("No data you gotta try again")
@@ -68,8 +72,9 @@ class Daemon:
             #lcd.printMessage(["Resume Game", self.l.getCondensedStatus()])
 
         elif phrase == "pause":
-            self.l.getFullStatus()
+            #self.l.getFullStatus()
             self.gameOn = False
+            print("I have paused the game yoooo! waitin to resume again")
             #lcd.printMessage(["Paused Game", self.l.getCondensedStatus()])
 
         elif phrase == "reset":
@@ -82,25 +87,37 @@ class Daemon:
                 #lcd.printMessage(["Reseting Game","Plz be patient"])
 
         elif phrase == "play":
-            #print("I got into play in checkkeyphrase")
-            pgn = open("kasparov_topalov_1999.pgn")
-            self.review = chess.pgn.read_game(pgn).mainline_moves()
-            self.review = iter(self.review) 
+            if self.review == False: 
+                #don't do anything if you are already reiewing games. 
+                # prevent messyness
+                #print("I got into play in checkkeyphrase")
+                pgn = open("kasparov_topalov_1999.pgn")
+                self.review = chess.pgn.read_game(pgn).mainline_moves()
+                self.review = iter(self.review)
+
             #converts the moves into an iteraboe object then we can do thru one by one
 
     def listen(self):
         with sr.Microphone() as source:
             print('Speak Anything:')
-            audio = self.r.listen(source)
 
+            audio = None
+            
             try:
-                data = self.r.recognize_google(audio)#convert audio to text
-                print('I Heard: {}'.format(data))
-                return data
+                audio = self.r.listen(source, 5)
 
+                try:
+                    data = self.r.recognize_google(audio)#convert audio to text
+                    print('I Heard: {}'.format(data))
+                    return data
+
+                except:
+                    print('Sorry could not recognize your voice')
+                    return None
             except:
-                print('Sorry could not recognize your voice')
                 return None
+
+            
 
 d = Daemon()
 
