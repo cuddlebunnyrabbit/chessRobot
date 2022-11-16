@@ -9,113 +9,100 @@ import speech_recognition as sr
 from phrase import *
 from parser import *
 
-from pocketsphinx import LiveSpeech, get_model_path
+#from pocketsphinx import LiveSpeech, get_model_path
 
-# when the button is pushed 
-#need button integration 
-r = sr.Recognizer()
-l = Log()
+class Daemon:
+    def __init__(self):
+        self.r = sr.Recognizer()
+        self.l = Log()
+        self.listening = True
+        self.gameOn = True
 
-def checkKeyPhrase(phrase):
-    if phrase == "terminate": #if i hear terminate
-        lcd.printMessage(["Terminated", "Game"])
-        gameOn = False
-        listening = False
+        self.review = False
 
-    elif phrase == "resign": #no added protection for resign game yet! needs more implementation
-        pass
-        gameOn = False
+        # when the button is pushed 
+# need button integration 
+        while self.listening:
+            data = self.listen()
 
-    elif phrase == "resume":
-        l.getFullStatus()
-        lcd.printMessage(["Resume Game", getCondensedStatus()])
-        gameOn = True
+            if data != None:
+                #checks if you have key command
+                command = parse(cleanData(data))
+                print("This is what I parsed:", command)
+                if command in key_phrase:
+                    self.checkKeyPhrase(command)
 
-    elif phrase == "pause":
-        l.getFullStatus()
-        gameOn = False
-        lcd.printMessage(["Paused Game", getCondensedStatus()])
+                else:
+                    if self.gameOn and self.review == False: #when it is game on and not during review
+                        print(" I am in self.gameON")
+                        if self.review == False:
+                            if command != None:
+                                self.l.makeMove(command)
+                                self.l.getFullStatus()
 
-    elif phrase == "reset":
-        if gameOn:
-            lcd.printMessage(["Game in progress", "Terminate game?"])
+            if self.review != False: # if the self is reviewing a game
+                print("I am in reviewing mode")
+                nextmv = next(self.review)
+                print("nextmv: ", nextmv)
+                self.l.makeMove(str(nextmv))
+                #self.l.getFullStatus()
+                        
+            #else:
+                #print("No data you gotta try again")
 
-        else:
-            lcd.printMessage(["Reseting Game","Plz be patient"])
+    def checkKeyPhrase(self, phrase):
+        if phrase == "terminate": #if i hear terminate
+            #lcd.printMessage(["Terminated", "Game"])
+            self.gameOn = False
+            self.review = False
+            self.listening = False
+            print("I have terminated the game. stopped listening. game is off.")
 
-    elif phrase == "play":
-        pgn = open("kasparov_topalov_1999.pgn")
-        review = pgn
+        elif phrase == "resign": #no added protection for resign game yet! needs more implementation
+            pass
+            self.gameOn = False
 
-def listen():
-    with sr.Microphone() as source:
-        print('Speak Anything:')
-        audio = r.listen(source)
+        elif phrase == "resume": 
+            self.l.getFullStatus()
+            self.gameOn = True
+            #lcd.printMessage(["Resume Game", self.l.getCondensedStatus()])
 
-        try:
-            data = r.recognize_google(audio)#convert audio to text
-            print('I Heard: {}'.format(data))
-            return data
+        elif phrase == "pause":
+            self.l.getFullStatus()
+            self.gameOn = False
+            #lcd.printMessage(["Paused Game", self.l.getCondensedStatus()])
 
-        except:
-            print('Sorry could not recognize your voice')
-            return None
+        elif phrase == "reset":
+            if self.gameOn:
+                lcd.printMessage(["Game in progress", "Terminate game?"])
 
-
-listening = True
-gameOn = True
-review = False
-
-while listening:
-    data = listen()
-    
-    if data != None:
-        command = parse(cleanData(data))
-        print("This is what I parsed:", command)
-
-        if command in key_phrase:
-            checkKeyPhrase(command)
-
-        else:
-            if command == None:
+            else:
+                #you need to go through and generate the coordinates map
                 ...
-                print("waiting a response")
+                #lcd.printMessage(["Reseting Game","Plz be patient"])
 
-            else:
-                l.makeMove(command)
-                l.getFullStatus()
+        elif phrase == "play":
+            #print("I got into play in checkkeyphrase")
+            pgn = open("kasparov_topalov_1999.pgn")
+            self.review = chess.pgn.read_game(pgn).mainline_moves()
+            self.review = iter(self.review) 
+            #converts the moves into an iteraboe object then we can do thru one by one
 
-    else:
-        print("No data you gotta try again")
+    def listen(self):
+        with sr.Microphone() as source:
+            print('Speak Anything:')
+            audio = self.r.listen(source)
 
-    #command could be 
-    '''
-    nonsense word
-    keyphrase
-    actual move 
-    '''
+            try:
+                data = self.r.recognize_google(audio)#convert audio to text
+                print('I Heard: {}'.format(data))
+                return data
 
-    '''
-    try:
-        checkKeyPhrase(command)
-        if gameOn == True:
-            if review == False:
-                makeMove(command)
-            else:
-                makeMove(review.mainline_moves())
-        else:
-            print("waiting to resume")
-        
-        getFullStatus()
+            except:
+                print('Sorry could not recognize your voice')
+                return None
 
-    except:
-        print("lol no action is done")
-    '''
-    
-#every time at the end you print game and board 
-l.getFullStatus()
-
-
+d = Daemon()
 
 '''
 # add if you still got time 
