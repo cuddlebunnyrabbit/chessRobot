@@ -1,22 +1,43 @@
+from MotorCode import *
+
 class shadowRealm:
 
     def __init__(self):
         self.board = self.shadowBoard()
-        #print(self.board)
 
-    def determine_coordinates(self, piece, in_true):
-        if in_true: #i am going in 
+    def determine_coordinates(self, piece, go_in):
+        #going in find your open space
+        # 
+        '''
+        is this a special or a normal piece?
+        special:
+            go from x to z to see if there is any issues 
+
+        normal:
+            remember the previous location 
+            move to the next open location 
+        ''' 
+
+        #getting out: find your piece 
+        #   check from z to x and then see the coordinate that matches 
+
+
+        if go_in: #i am going in 
             if piece.isupper(): #white pieces are uppercase
                 ...
                     
             else:
                 ...
 
-    def input(self, piece): #expects the coordinates 
-            ...
+    def banash(self, origin, piece): #expects the coordinates 
+        #shadowRealm.banash(destination, self.getPiece(destination))
+        coordinate = self.determine_coordinates(piece, True)
+        MotorCode.push_move(origin, coordinate, True)
 
-    def outtake(self, piece): #expects the coordinates 
-        ...
+    def reinstate(self, origin, piece): #expects the coordinates 
+        coordinate = self.determine_coordinates(piece, False)
+        MotorCode.push_move(coordinate, origin, True)
+        #shadowRealm.reinstate(destination, promotion_piece)
 
     class shadowBoard():
         def __init__(self):
@@ -51,7 +72,6 @@ class shadowRealm:
             return (file, rank)
 
         def set(self, location, piece): #piece is capitalize or lowercase string 
-            #location should be column then row x3, y6 for example set by 
             file, rank = self.array_loc(location)
             self.data[rank][file] = piece
 
@@ -79,8 +99,3 @@ s = shadowRealm()
 board = s.board
 board.set("x3", "P")
 print(board)
-
-#print(board.get("x3"))
-#print(board)
-
-

@@ -108,7 +108,7 @@ class Daemon:
                 audio = self.r.listen(source, TIME_LIMIT, phrase_time_limit= TIME_LIMIT)
 
                 try:
-                    print("recognizing...... :(")
+                    print("recognizing......")
                     data = self.r.recognize_google(audio)#convert audio to text
                     print('I Heard: {}'.format(data))
                     return data
