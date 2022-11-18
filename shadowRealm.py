@@ -5,12 +5,12 @@ class shadowRealm:
         #print(self.board)
 
     def determine_coordinates(self, piece, in_true):
-            if in_true: #i am going in 
-                if piece.isupper(): #white pieces are uppercase
-                    ...
+        if in_true: #i am going in 
+            if piece.isupper(): #white pieces are uppercase
+                ...
                     
-                else:
-                    ...
+            else:
+                ...
 
     def input(self, piece): #expects the coordinates 
             ...

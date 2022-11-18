@@ -24,7 +24,6 @@ class Daemon:
 # need button integration 
         while self.listening:
             data = self.listen()
-
             #data = self.listen()
 
             if data != None:
@@ -92,6 +91,9 @@ class Daemon:
                 pgn = open("kasparov_topalov_1999.pgn")
                 self.review = chess.pgn.read_game(pgn).mainline_moves()
                 self.review = iter(self.review)
+
+        elif phrase == "engine":
+            print("you still must implement the engine function")
 
             #converts the moves into an iteraboe object then we can do thru one by one
 

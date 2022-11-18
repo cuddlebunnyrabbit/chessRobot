@@ -1,6 +1,7 @@
 import chess
 import chess.pgn
-
+#from MotorCode import *
+from shadowRealm import *
 
 class Log:
 
@@ -24,65 +25,110 @@ class Log:
             return "B"
 
     def makeMove(self, move):
-        if self.node == None:
-            print("UnboundLocalError! Add first move to game! ")
-            try:
-                #must have push_uci before the node since try will execute all 
-                #commands until it reaches a bad thing and then it suddenly stopps,
-                #leaving the command 1/2 executed and corrupting the data
-                self.board.push_uci(move) 
-                self.node = self.game.add_variation(chess.Move.from_uci(move))
-            except:
-                print("invalid or illegal move. try again")
+        currmove = chess.Move.from_uci(move)
 
+        if currmove in self.board.legal_moves:
+            self.motorMove(move) #do not continue until motorMove has terminated! 
+            if self.node == None: #fist move
+                
+                self.node = self.game.add_variation(currmove)
+
+            else:
+                self.node = self.node.add_variation(currmove)
+
+            self.board.push_uci(move) 
         else:
-            print("Normal move")
-            try:
-                self.board.push_uci(move)
-                self.node = self.node.add_variation(chess.Move.from_uci(move))
-            except:
-                print("invalid or illegal move. try again")
-            #You gotta check these moves to see if they are valid with try and except 
-        
+            print("invalid or illegal move! try again plz")
+
     def getTurn(self): #increments after black moves. starts at 1
         return self.board.fullmove_number
 
     def getCondensedStatus(self):
         return "Next Move:", self.getTurn(), ".", self.getNextColor()
 
+    def getFullStatus(self): #helper method for chessDaemon
+        print(self.getGame())
+        print(self.getBoard())
+
     def getGameStatus(self):
         return #who won the game?
 
-    def getBoard(self):
+    def getBoard(self): #maybe jerry could use this?
         return self.board
 
     def getGame(self):
         return self.game
 
-    #helper method for chessDaemon
-    def getFullStatus(self):
-        print(self.getGame())
-        print(self.getBoard())
+    #helpter methods used by motormove!
+    def getPiece(self, location): #location should be d5 for example
+        square_name = chess.parse_square(location)
+        piece = self.board.piece_at(square_name)
+        return piece #returns Q or q! 
 
+    #motorMove: that may interact with shadowrealm and give motor code info 
+    def motorMove(self, move):
+        origin = move[:2]
+        destination = move[2:4] #check your assumptions! not allways will be string be 4!
+        currmove = chess.Move.from_uci(move)
 
+        if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove): 
+            print("this is a normal capture")
+            shadowRealm.banash(destination, self.getPiece(destination)) #banash should be current location, piece
+
+        if self.getPiece(origin) == "N" or self.getPiece(origin) == "n":
+            print("this is a knight move")
+            MotorCode.push_move(origin, destination, True)
+
+        elif self.board.is_castling(currmove):
+            print("this is a castle")
+            MotorCode.push_move(origin, destination, False) #move the king normally  
+
+            if destination[0] == "c": #move the rook abnormally
+                MotorCode.push_move("a" + destination[1], "d" + destination[1], True) 
+            else:
+                MotorCode.push_move("h" + destination[1], "f" + destination[1], True)
+
+        elif self.board.is_en_passant(currmove):
+            print("this is en_passant")
+            MotorCode.push_move(origin, destination, False) 
+            capturedpawnloc = destination[0] + origin[1] #move the piece normally
+            shadowRealm.banash(capturedpawnloc, self.getPiece(capturedpawnloc)) #move the shadowrealm
+            
+        else: #under a normal move
+            print("this is a normal move: ", self.getPiece(origin))
+            MotorCode.push_move(origin, destination, False)
+
+            if len(move) == 5: #if the move is a promotion move
+                print("this is a promotion: ", promotion_piece)
+                promotion_piece = move[-1]
+                shadowRealm.banash(destination, self.getPiece(destination))
+                shadowRealm.reinstate(destination, promotion_piece)
+        
 #the e1g1 will give the castling! you will not need anything else 
 
 '''
 l = Log()
 l.makeMove("e2e4")
+l.makeMove("f7f5")
+l.makeMove("e4e5")
 l.makeMove("d7d5")
-l.makeMove("e4d5")
-l.makeMove("c7c6")
-l.makeMove("d5c6")
-l.makeMove("c8g4")
-l.makeMove("c6b7")
-l.makeMove("f7f6")
-l.makeMove("b7a8q")
+l.makeMove("e5d6")
+l.makeMove("e7e5")
+l.makeMove("d6c7")
+l.makeMove("f8b4")
+l.makeMove("c7b8q")
+l.makeMove("g8e7")
+l.makeMove("d1f3")
+l.makeMove("e8g8")
+'''
+
+'''
 print(l.getBoard())
 print(l.getGame())
 print(l.getTurn())
 print(l.getCondensedStatus())
 '''
+
 
 
 
