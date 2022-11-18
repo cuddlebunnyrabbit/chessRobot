@@ -9,7 +9,7 @@ class shadowRealm:
         
         def __init__(self):
             #initialize and make coordinates for each
-            self.ROW = [11, 12, 13, 14, 15, 16, 17, 18]
+            self.ROW = [1, 2, 3, 4, 5, 6, 7, 8]
             self.COLUMN = ['x', 'y', 'z']
 
             self.white_column = 0 #you can be full 0 = x 

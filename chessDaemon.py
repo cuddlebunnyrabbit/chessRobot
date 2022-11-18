@@ -1,5 +1,3 @@
-import multiprocessing
-import time
 from chess import *
 #import os
 #import chess.pgn
@@ -102,11 +100,13 @@ class Daemon:
             print('Speak Anything:')
 
             audio = None
+            TIME_LIMIT = 5
             
-            try:
-                audio = self.r.listen(source, 5)
+            try: 
+                audio = self.r.listen(source, TIME_LIMIT, phrase_time_limit= TIME_LIMIT)
 
                 try:
+                    print("recognizing...... :(")
                     data = self.r.recognize_google(audio)#convert audio to text
                     print('I Heard: {}'.format(data))
                     return data
@@ -116,8 +116,6 @@ class Daemon:
                     return None
             except:
                 return None
-
-            
 
 d = Daemon()
 

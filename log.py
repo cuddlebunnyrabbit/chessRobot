@@ -25,7 +25,7 @@ class Log:
 
     def makeMove(self, move):
         if self.node == None:
-            #print("UnboundLocalError! Add first move to game! ")
+            print("UnboundLocalError! Add first move to game! ")
             try:
                 #must have push_uci before the node since try will execute all 
                 #commands until it reaches a bad thing and then it suddenly stopps,
@@ -36,7 +36,7 @@ class Log:
                 print("invalid or illegal move. try again")
 
         else:
-            #print("Normal move")
+            print("Normal move")
             try:
                 self.board.push_uci(move)
                 self.node = self.node.add_variation(chess.Move.from_uci(move))
