@@ -4,7 +4,6 @@ import chess.pgn
 from shadowRealm import *
 
 class Log:
-
     def __init__(self):
         self.game = chess.pgn.Game()
         self.node = None
@@ -72,41 +71,50 @@ class Log:
         currmove = chess.Move.from_uci(move)
 
         if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove): 
-            print("this is a normal capture")
-            shadowRealm.banash(destination, self.getPiece(destination)) #banash should be current location, piece
+            print("this is a normal capture: ", (destination, self.getPiece(destination)))
+            #NOTE: SELF.GETPIECE IS SHOWN AS "P" OR LOWERCASE 
+            # BUT IT IS A PIECE OBJECT NOT A STRING
+
+            #shadowRealm.banash(destination, self.getPiece(destination)) 
+            #banash should be current location, piece
 
         if self.getPiece(origin) == "N" or self.getPiece(origin) == "n":
-            print("this is a knight move")
-            MotorCode.push_move(origin, destination, True)
+            print("this is a knight move: ", (origin, destination, True))
+            #MotorCode.push_move(origin, destination, True)
 
         elif self.board.is_castling(currmove):
-            print("this is a castle")
-            MotorCode.push_move(origin, destination, False) #move the king normally  
+            print("this is a castle: ", (origin, destination, False))
+            #MotorCode.push_move(origin, destination, False) #move the king normally  
 
             if destination[0] == "c": #move the rook abnormally
-                MotorCode.push_move("a" + destination[1], "d" + destination[1], True) 
+                print("accompaning rook move: ," ("a" + destination[1], "d" + destination[1], True))
+                #MotorCode.push_move("a" + destination[1], "d" + destination[1], True) 
             else:
-                MotorCode.push_move("h" + destination[1], "f" + destination[1], True)
+                print("accompaning rook move: ," ("h" + destination[1], "f" + destination[1], True))
+                #MotorCode.push_move("h" + destination[1], "f" + destination[1], True)
 
         elif self.board.is_en_passant(currmove):
-            print("this is en_passant")
-            MotorCode.push_move(origin, destination, False) 
             capturedpawnloc = destination[0] + origin[1] #move the piece normally
-            shadowRealm.banash(capturedpawnloc, self.getPiece(capturedpawnloc)) #move the shadowrealm
+            #MotorCode.push_move(origin, destination, False) 
+            #shadowRealm.banash(capturedpawnloc, self.getPiece(capturedpawnloc)) #move the shadowrealm
+            print("this is en_passant 1st move motor code: ", (origin, destination, False))
+            print("this is en_passant 2nd move shadowbanish: ", (capturedpawnloc, self.getPiece(capturedpawnloc)))
             
         else: #under a normal move
-            print("this is a normal move: ", self.getPiece(origin))
-            MotorCode.push_move(origin, destination, False)
+            print("this is a normal move: ", (origin, destination, False))
+            #MotorCode.push_move(origin, destination, False)
 
             if len(move) == 5: #if the move is a promotion move
-                print("this is a promotion: ", promotion_piece)
                 promotion_piece = move[-1]
-                shadowRealm.banash(destination, self.getPiece(destination))
-                shadowRealm.reinstate(destination, promotion_piece)
+                #shadowRealm.banash(destination, self.getPiece(destination))
+                #shadowRealm.reinstate(destination, promotion_piece)
+                print("this is a promotion: ", promotion_piece)
+                print("promotion: shadow banaish", (destination, self.getPiece(destination)))
+                print("shadowretrieving: ", (destination, promotion_piece))
         
 #the e1g1 will give the castling! you will not need anything else 
 
-'''
+
 l = Log()
 l.makeMove("e2e4")
 l.makeMove("f7f5")
@@ -120,7 +128,6 @@ l.makeMove("c7b8q")
 l.makeMove("g8e7")
 l.makeMove("d1f3")
 l.makeMove("e8g8")
-'''
 
 '''
 print(l.getBoard())
