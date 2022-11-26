@@ -8,9 +8,8 @@ class Log:
         self.game = chess.pgn.Game()
         self.node = None
         self.board = chess.Board()
+        self.shadow = shadowRealm()
 
-    #san() gets the algebranic notation to the node!
-    # you can find all the errors the machine can throw 
     def getNextColor(self):
         #node.turn() returns the true if the next move is white 
         #node.turn() returns false if the next move is black
@@ -29,12 +28,9 @@ class Log:
         if currmove in self.board.legal_moves:
             self.motorMove(move) #do not continue until motorMove has terminated! 
             if self.node == None: #fist move
-                
                 self.node = self.game.add_variation(currmove)
-
             else:
                 self.node = self.node.add_variation(currmove)
-
             self.board.push_uci(move) 
         else:
             print("invalid or illegal move! try again plz")
@@ -71,12 +67,10 @@ class Log:
         currmove = chess.Move.from_uci(move)
 
         if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove): 
+            self.shadow.banash(self.getPiece(destination))
             print("this is a normal capture: ", (destination, self.getPiece(destination)))
             #NOTE: SELF.GETPIECE IS SHOWN AS "P" OR LOWERCASE 
             # BUT IT IS A PIECE OBJECT NOT A STRING
-
-            #shadowRealm.banash(destination, self.getPiece(destination)) 
-            #banash should be current location, piece
 
         if self.getPiece(origin) == "N" or self.getPiece(origin) == "n":
             print("this is a knight move: ", (origin, destination, True))
@@ -96,25 +90,25 @@ class Log:
         elif self.board.is_en_passant(currmove):
             capturedpawnloc = destination[0] + origin[1] #move the piece normally
             #MotorCode.push_move(origin, destination, False) 
-            #shadowRealm.banash(capturedpawnloc, self.getPiece(capturedpawnloc)) #move the shadowrealm
+            self.shadow.banash(self.getPiece(capturedpawnloc)) #move the shadowrealm
             print("this is en_passant 1st move motor code: ", (origin, destination, False))
-            print("this is en_passant 2nd move shadowbanish: ", (capturedpawnloc, self.getPiece(capturedpawnloc)))
             
         else: #under a normal move
             print("this is a normal move: ", (origin, destination, False))
             #MotorCode.push_move(origin, destination, False)
 
             if len(move) == 5: #if the move is a promotion move
-                promotion_piece = move[-1]
+                promotion_piece = str(move[-1])
+                if int(move[-2]) == 8: #if the move is a white move
+                    promotion_piece = promotion_piece.upper()
                 #shadowRealm.banash(destination, self.getPiece(destination))
                 #shadowRealm.reinstate(destination, promotion_piece)
                 print("this is a promotion: ", promotion_piece)
-                print("promotion: shadow banaish", (destination, self.getPiece(destination)))
-                print("shadowretrieving: ", (destination, promotion_piece))
+                self.shadow.reinstate(promotion_piece)
         
 #the e1g1 will give the castling! you will not need anything else 
 
-
+'''
 l = Log()
 l.makeMove("e2e4")
 l.makeMove("f7f5")
@@ -129,11 +123,13 @@ l.makeMove("g8e7")
 l.makeMove("d1f3")
 l.makeMove("e8g8")
 
-'''
+
 print(l.getBoard())
 print(l.getGame())
 print(l.getTurn())
 print(l.getCondensedStatus())
+
+
 '''
 
 

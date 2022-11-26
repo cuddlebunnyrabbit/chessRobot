@@ -5,39 +5,21 @@ class shadowRealm:
     def __init__(self):
         self.board = self.shadowBoard()
 
-    def determine_coordinates(self, piece, go_in):
-        #going in find your open space
-        # 
-        '''
-        is this a special or a normal piece?
-        special:
-            go from x to z to see if there is any issues 
-
-        normal:
-            remember the previous location 
-            move to the next open location 
-        ''' 
-
-        #getting out: find your piece 
-        #   check from z to x and then see the coordinate that matches 
-
-
-        if go_in: #i am going in 
-            if piece.isupper(): #white pieces are uppercase
-                ...
-                    
-            else:
-                ...
-
-    def banash(self, origin, piece): #expects the coordinates 
+    def banash(self, piece): 
         #shadowRealm.banash(destination, self.getPiece(destination))
-        coordinate = self.determine_coordinates(piece, True)
-        MotorCode.push_move(origin, coordinate, True)
+        coordinate = self.board.determine_coordinates(piece, True)
+        self.board.set(coordinate, piece)
+        #MotorCode.push_move(origin, coordinate, True)
 
-    def reinstate(self, origin, piece): #expects the coordinates 
-        coordinate = self.determine_coordinates(piece, False)
-        MotorCode.push_move(coordinate, origin, True)
+    def reinstate(self, piece): 
+        coordinate = self.board.determine_coordinates(piece, False)
+        self.board.set(coordinate, '.')
+        #MotorCode.push_move(coordinate, origin, True)
         #shadowRealm.reinstate(destination, promotion_piece)
+
+    #how to reinstate all of the pieces in the correct locations? 
+    def reset():
+        ...
 
     class shadowBoard():
         def __init__(self):
@@ -50,8 +32,17 @@ class shadowRealm:
             self.WHITE_END = 1
             self.BLACK_START = 5
             self.BLACK_END = 8
-            self.data = []
 
+            self.white_current = self.COLUMN[0] + str(self.WHITE_START)
+            self.black_current = self.COLUMN[0] + str(self.BLACK_START)
+
+            self.SPECIAL_PIECE = ["Q", "R", "q", "r"]
+
+            #create self.data + populate it 
+            self.data = []
+            self.populate()
+
+        def populate(self):
             for i in range(len(self.ROW)):
                 col = []
                 for j in range(len(self.COLUMN)):
@@ -66,15 +57,18 @@ class shadowRealm:
                 s += "\n"
             return s
 
-        def array_loc(self, location):
+        #helper method to get x7 to return the corresponding file + rank in array form
+        def array_loc(self, location):  
             file = self.COLUMN.index(location[0])
             rank = len(self.ROW) - int(location[1])
             return (file, rank)
 
-        def set(self, location, piece): #piece is capitalize or lowercase string 
+        #helper method: set piece at a location
+        def set(self, location, piece): 
             file, rank = self.array_loc(location)
             self.data[rank][file] = piece
 
+        #helper method: get piece from a location 
         def get(self, location):
             file, rank = self.array_loc(location)
             data = self.data[rank][file]
@@ -82,20 +76,106 @@ class shadowRealm:
                 return None #returns none if the space is empty 
             return data
 
-        #you can expand to give some other info 
-        def get_piece_location(self, piece): #get the queen's location
+        #get the major piece's location 
+        def get_piece_location(self, piece): 
             row = self.BLACK_END 
             if piece.isupper():
                 row = self.WHITE_END
 
             for col in self.COLUMN:
-                data = self.getter(str(col) + str(row))
-                if data != None:
-                    if data == piece:
-                        return str(col) + str(row)
+                data = self.get(str(col) + str(row))
+                if data == piece:
+                    return str(col) + str(row)
             return None
 
+        def determine_coordinates(self, piece, go_in):
+            if go_in: #i am going in
+                if piece in self.SPECIAL_PIECE: #check if special piece
+                    #should be able to change get piece_location for the 
+                    # . so it is more versatile
+                    #print("The special piece is: ", piece)
+                    for char in self.COLUMN:
+                        location = char + str(self.BLACK_END)
+                        if piece.isupper():
+                            location = char + str(self.WHITE_END)
+                        current = self.get(location)
+                        if current == None:
+                            #print("the piece will be stored in: ", location )
+                            return location
+
+                if piece.isupper(): #white pieces are uppercase
+                    current = self.white_current 
+                    if int(current[1]) == self.WHITE_END + 1: 
+                        #if the current is at white end of ordered allocation
+                        try:
+                            self.white_current = self.COLUMN[self.COLUMN.index(current[0]) + 1] + str(self.WHITE_START)
+                        except: 
+                            print("White is full")
+                    else:
+                        self.white_current = current[0] + str(int(current[1]) - 1)
+
+                    #print("the piece will be stored in: ", current )
+                    #print("the next white piece will be stored in: ", self.white_current)
+                    return current
+                else:
+                    current = self.black_current
+                    if int(current[1]) == self.BLACK_END - 1: 
+                        try:
+                            self.black_current = self.COLUMN[self.COLUMN.index(current[0]) + 1] + str(self.BLACK_START)
+                        except:
+                            print("Black is full")
+                    else:
+                        self.black_current = current[0] + str(int(current[1]) + 1)
+                    #print("the piece will be stored in: ", current )
+                    #print("the next black piece will be stored in: ", self.black_current)
+                    return current
+
+            else: 
+                #print("where is my queen or major piece?")
+                return self.get_piece_location(piece)
+
+'''
 s = shadowRealm()
 board = s.board
-board.set("x3", "P")
+#board.set("x3", "P")
+
+s.banash("Q")
 print(board)
+s.banash("P")
+print(board)
+s.banash("p")
+print(board)
+s.banash("Q")
+print(board)
+s.banash("r")
+print(board)
+s.banash("N")
+print(board)
+s.banash("N")
+print(board)
+s.banash("B")
+print(board)
+s.banash("N")
+print(board)
+s.banash("R")
+print(board)
+s.reinstate("Q")
+print(board)
+s.banash("N")
+print(board)
+s.banash("B")
+print(board)
+s.banash("N")
+print(board)
+s.banash("N")
+print(board)
+s.banash("N")
+print(board)
+s.banash("B")
+print(board)
+s.banash("R")
+print(board)
+s.banash("Q")
+print(board)
+'''
+

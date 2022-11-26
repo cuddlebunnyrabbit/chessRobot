@@ -1,0 +1,9 @@
+* test if shadowrealm and shadowmoves work
+    * test if all shadowmoves work alongside the real board 
+    * reinstate all pieces work? 
+
+* implement engine to user playing 
+* implement user choice of white or black against engine 
+* user can only make inputs when the machine has executed the move
+* test with light
+* can you get bluetooth working? 
