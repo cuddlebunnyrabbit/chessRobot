@@ -17,7 +17,6 @@ class Daemon:
         self.l = Log()
         self.listening = True
         self.gameOn = True
-
         self.review = False
 
         # when the button is pushed 
@@ -35,7 +34,7 @@ class Daemon:
 
                 else:
                     if self.gameOn and self.review == False: #when it is game on and not during review
-                        print(" I am in self.gameON")
+                        #print(" I am in self.gameON")
                         if self.review == False:
                             if command != None:
                                 self.l.makeMove(command)

@@ -3,13 +3,11 @@ from phrase import *
 from chess import *
 
 def cleanData(command):
-    '''
-    if len(command) == 0:
-        return None #throw an error situation when you have no data 
-        #is this a good idea? or is this gonna be a silent error?
-'''
-    while " " in command: #remove space
-        command = command.replace(' ', '')
+    REMOVE_CHARACTERS = [" ", "-", "."]
+
+    for char in REMOVE_CHARACTERS:
+        while char in command: #remove space
+            command = command.replace(char, '')
     command = command.lower() #lowercase
     return(command)
   
@@ -25,6 +23,8 @@ def parse(command):
     PROMOTABLE_PIECE = ['q', 'r', 'b', 'n']
     #checks if the command is an actual valid move 
     if len(command) == 4:
+        if command[:2] == command[2:]: #takes care of the e2e2 exception
+            return None
         if command[:2] in SQUARE_NAMES and command[2:] in SQUARE_NAMES:
             return command
     

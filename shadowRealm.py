@@ -9,11 +9,14 @@ class shadowRealm:
         #shadowRealm.banash(destination, self.getPiece(destination))
         coordinate = self.board.determine_coordinates(piece, True)
         self.board.set(coordinate, piece)
+        print(self.board)
         #MotorCode.push_move(origin, coordinate, True)
 
     def reinstate(self, piece): 
         coordinate = self.board.determine_coordinates(piece, False)
-        self.board.set(coordinate, '.')
+        if coordinate: #if the coordinate even exists, you can get something moved to the board
+            self.board.set(coordinate, '.')
+        print(self.board)
         #MotorCode.push_move(coordinate, origin, True)
         #shadowRealm.reinstate(destination, promotion_piece)
 

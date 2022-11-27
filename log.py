@@ -58,7 +58,7 @@ class Log:
     def getPiece(self, location): #location should be d5 for example
         square_name = chess.parse_square(location)
         piece = self.board.piece_at(square_name)
-        return piece #returns Q or q! 
+        return piece.symbol() #returns Q or q! 
 
     #motorMove: that may interact with shadowrealm and give motor code info 
     def motorMove(self, move):
@@ -81,10 +81,10 @@ class Log:
             #MotorCode.push_move(origin, destination, False) #move the king normally  
 
             if destination[0] == "c": #move the rook abnormally
-                print("accompaning rook move: ," ("a" + destination[1], "d" + destination[1], True))
+                print("accompaning rook move: ", ("a" + destination[1], "d" + destination[1], True))
                 #MotorCode.push_move("a" + destination[1], "d" + destination[1], True) 
             else:
-                print("accompaning rook move: ," ("h" + destination[1], "f" + destination[1], True))
+                print("accompaning rook move: ", ("h" + destination[1], "f" + destination[1], True))
                 #MotorCode.push_move("h" + destination[1], "f" + destination[1], True)
 
         elif self.board.is_en_passant(currmove):
