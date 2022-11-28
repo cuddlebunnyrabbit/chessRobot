@@ -33,22 +33,24 @@ class Daemon:
                     self.checkKeyPhrase(command)
 
                 else:
+                    #print("I am in the else loop")
                     if self.gameOn and self.review == False: #when it is game on and not during review
-                        #print(" I am in self.gameON")
-                        if self.review == False:
-                            if command != None:
-                                self.l.makeMove(command)
-                                self.l.getFullStatus()
+                        #print(" I am in self.gameONnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+                        if command != None:
+                            #print("I am attempting to make moves at this pt")
+                            self.l.makeMove(command)
+                            self.l.getFullStatus()
+                        else:
+                            print("command is none?")
 
             if self.gameOn and self.review != False: # if the self is reviewing a game
                 print("I am in reviewing mode")
-                nextmv = next(self.review)
-                print("nextmv: ", nextmv)
-                self.l.makeMove(str(nextmv))
-                self.l.getFullStatus()
-                        
-            #else:
-                #print("No data you gotta try again")
+                try:
+                    nextmv = next(self.review)
+                    self.l.makeMove(str(nextmv))
+                    self.l.getFullStatus()
+                except:
+                    print("ran out of moves lol")
 
     def checkKeyPhrase(self, phrase):
         if phrase == "terminate": #if i hear terminate
@@ -56,7 +58,13 @@ class Daemon:
             self.gameOn = False
             self.review = False
             self.listening = False
-            print("I have terminated the game. stopped listening. game is off.")
+
+            #print("before termination of game: ", self.l.game)
+        
+            if self.l.game.next() != None:
+                self.l.export()
+                self.l.restart_game()
+            #print("I have terminated the game. stopped listening. game is off.")
 
         elif phrase == "resign": #no added protection for resign game yet! needs more implementation
             pass
@@ -78,18 +86,19 @@ class Daemon:
                 print("game in progress, pause game first?")
                 #lcd.printMessage(["Game in progress", "Terminate game?"])
             else:
-                self.l.reset()
-                print("I reset the whole thing :)")
                 #lcd.printMessage(["Reseting Game","Plz be patient"])
+                self.l.reset()
+                self.review = False #stops reviewing
 
-        elif phrase == "review":
+        elif phrase == "spectate":
             if self.review == False: 
-                #don't do anything if you are already reiewing games. 
-                # prevent messyness
-                #print("I got into play in checkkeyphrase")
-                pgn = open("kasparov_topalov_1999.pgn")
-                self.review = chess.pgn.read_game(pgn).mainline_moves()
-                self.review = iter(self.review)
+                pgn = "kasparov_topalov_1999.pgn"
+                self.review = self.l.get_review_iter(pgn)
+        
+        elif phrase == "review": # implement this thing 
+            if self.review == False: 
+                pgn = "export.pgn"
+                self.review = self.l.get_review_iter(pgn)
 
         elif phrase == "engine":
             print("you still must implement the engine function")
@@ -109,7 +118,7 @@ class Daemon:
                 try:
                     print("recognizing......")
                     data = self.r.recognize_google(audio)#convert audio to text
-                    print('I Heard: {}'.format(data))
+                    #print('I Heard: {}'.format(data))
                     return data
 
                 except:
@@ -119,14 +128,3 @@ class Daemon:
                 return None
 
 d = Daemon()
-
-'''
-# add if you still got time 
-def interpretX(): #parser only cleans data. gameOn will interpret + resolve issues
-    pass
-    if (command[0] == "x"): 
-        pass
-        #check if white or black to move 
-        #if white to move, check the 2 squares if they have pawns 
-        #change results accordingly
-'''

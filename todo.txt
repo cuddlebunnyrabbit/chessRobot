@@ -3,6 +3,8 @@ FINISHED:
     * test if all shadowmoves work alongside the real board 
     * fix error with e2e2
 * reset all pieces work? 
+* can you write a file with the game before termination or changing modes
+* implement review as opposed to spectate 
 
 TO DO:
 * user can only make inputs when the machine has executed the move
@@ -13,7 +15,11 @@ ASK OTHERS FOR HELP:
 * why is log so disorganized?
 
 EXTRA CREDIT (NOT REQUIRED BUT WE NEED IF WE WANT TO WINNNN)
+* fix problem with review and spectate rewriting over the game we just played 
+* implement resign 
 * implement engine to user playing 
     * implement user choice of white or black against engine 
+
+
+* implement analysis (only on if we are reviewing or spectating )
 * can you get bluetooth working? 
-* can you write a file with the game before termination or changing modes

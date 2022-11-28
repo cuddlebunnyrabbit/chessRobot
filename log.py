@@ -53,6 +53,11 @@ class Log:
         else:
             print("invalid or illegal move! try again plz")
 
+    def get_review_iter(self, pgn):
+        temp = chess.pgn.read_game(open(pgn)).mainline_moves()
+        temp = iter(temp)
+        return temp
+
     #helpter methods used by motormove!
     def getPiece(self, location): #location should be d5 for example
         square_name = chess.parse_square(location)
@@ -104,7 +109,6 @@ class Log:
                         storage = self.find_storage(location)
                         self.motorReset(location + storage)
                         #print("I found temp storage location at ", storage, "while i am currently at ", location)
-
     def reset(self): #reset your own board before you reset the other board 
         self.clean_house()
 
@@ -126,6 +130,10 @@ class Log:
                     self.motorReset(location + home)
                     self.getFullStatus()
 
+        self.export()
+        self.restart_game()
+        #restart the game from new 
+
     def motorReset(self, move): # this is used to move the pieces during resets
         origin = move[:2]
         destination = move[2:4]
@@ -146,7 +154,7 @@ class Log:
             pieceThing = chess.Piece.from_symbol(piece)
             self.board.set_piece_at(destination_sq, pieceThing)
 
-    #motorMove: that may interact with shadowrealm and give motor code info 
+    #motorMove: this is used to make a normal move under normal circumstances like play and engine play
     def motorMove(self, move):
         origin = move[:2]
         destination = move[2:4] #check your assumptions! not allways will be string be 4!
@@ -192,6 +200,15 @@ class Log:
                 print("this is a promotion: ", promotion_piece)
                 self.shadow.reinstate(promotion_piece)
 
+    def export(self):
+        print(self.game, file=open("export.pgn", "w"), end="\n\n")
+        print(self.game, file=open("export_log.pgn", "a"), end="\n\n")   
+
+    def restart_game(self):
+        self.game = chess.pgn.Game()
+        self.board = chess.Board()
+        self.node = None
+
     #communicates with lcd 
     def getNextColor(self):
         #node.turn() returns the true if the next move is white 
@@ -227,9 +244,18 @@ class Log:
 
 '''
 l = Log()
-l.board = chess.Board("2kr3r/pp3p2/3p1qnp/2pPp1pP/2P5/P1P1P1B1/2Q1KPP1/1R5R b - - 0 19")
-l.reset()
+pgn = open("kasparov_topalov_1999.pgn")
+review = chess.pgn.read_game(pgn).mainline_moves()
+review = iter(review)
+
+for thing in review:
+    l.makeMove(str(thing))
+
+l.export()
 '''
+                
+#l.reset()
+
 
 '''
 l = Log()
