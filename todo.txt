@@ -2,9 +2,9 @@ FINISHED:
 * test if shadowrealm and shadowmoves work
     * test if all shadowmoves work alongside the real board 
     * fix error with e2e2
+* reset all pieces work? 
 
 TO DO:
-* reset all pieces work? 
 * user can only make inputs when the machine has executed the move
 * test with light
 * control system work in daemon: reset if you switch modes to review from play 
@@ -17,8 +17,3 @@ EXTRA CREDIT (NOT REQUIRED BUT WE NEED IF WE WANT TO WINNNN)
     * implement user choice of white or black against engine 
 * can you get bluetooth working? 
 * can you write a file with the game before termination or changing modes
-
-Things doing rn for reset:
-* log.motor move is bad cuz it doesn't know if you are making a move or if it is making a reset 
-* reset for log is not good 
-* shadowrealm reset is not good 

@@ -115,6 +115,7 @@ class Log:
                 if piece:
                     home = self.find_home(piece)
                     self.motorReset(location + home)
+                    self.getFullStatus()
 
         for row in self.shadow.board.ROW:
             for col in self.shadow.board.COLUMN:
@@ -123,6 +124,7 @@ class Log:
                 if piece:
                     home = self.find_home(piece)
                     self.motorReset(location + home)
+                    self.getFullStatus()
 
     def motorReset(self, move): # this is used to move the pieces during resets
         origin = move[:2]
@@ -143,11 +145,6 @@ class Log:
             destination_sq = chess.parse_square(destination)
             pieceThing = chess.Piece.from_symbol(piece)
             self.board.set_piece_at(destination_sq, pieceThing)
-            
-        print("i changed the board!")
-        print(self.board)
-
-
 
     #motorMove: that may interact with shadowrealm and give motor code info 
     def motorMove(self, move):
