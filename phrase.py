@@ -6,7 +6,7 @@ key_phrase = [ #must be preceeded by "chessbot so chessbot doesn't get confused"
     "pause",
     "resume",
     "reset",
-    "play", #this is extracredit to load a pgn and play the game
+    "review", #this is extracredit to load a pgn and play the game
     "engine" #this is another extracredit to play against an engine 
     ]
 

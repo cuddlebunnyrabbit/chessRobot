@@ -1,4 +1,5 @@
 #from MotorCode import *
+from chess import *
 
 class shadowRealm:
 
@@ -12,17 +13,14 @@ class shadowRealm:
         print(self.board)
         #MotorCode.push_move(origin, coordinate, True)
 
-    def reinstate(self, piece): 
+    def reinstate(self, piece): #only used for promotion
         coordinate = self.board.determine_coordinates(piece, False)
         if coordinate: #if the coordinate even exists, you can get something moved to the board
-            self.board.set(coordinate, '.')
+            self.board.empty_square(coordinate)
+            print("i already reset")
         print(self.board)
         #MotorCode.push_move(coordinate, origin, True)
         #shadowRealm.reinstate(destination, promotion_piece)
-
-    #how to reinstate all of the pieces in the correct locations? 
-    def reset():
-        ...
 
     class shadowBoard():
         def __init__(self):
@@ -70,6 +68,11 @@ class shadowRealm:
         def set(self, location, piece): 
             file, rank = self.array_loc(location)
             self.data[rank][file] = piece
+
+        def empty_square(self, location):
+            piece = self.get(location)
+            self.set(location, '.')
+            return piece
 
         #helper method: get piece from a location 
         def get(self, location):

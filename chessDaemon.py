@@ -75,14 +75,14 @@ class Daemon:
 
         elif phrase == "reset":
             if self.gameOn:
-                lcd.printMessage(["Game in progress", "Terminate game?"])
-
+                print("game in progress, pause game first?")
+                #lcd.printMessage(["Game in progress", "Terminate game?"])
             else:
-                #you need to go through and generate the coordinates map
-                ...
+                self.l.reset()
+                print("I reset the whole thing :)")
                 #lcd.printMessage(["Reseting Game","Plz be patient"])
 
-        elif phrase == "play":
+        elif phrase == "review":
             if self.review == False: 
                 #don't do anything if you are already reiewing games. 
                 # prevent messyness
