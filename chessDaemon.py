@@ -1,7 +1,7 @@
 from chess import *
 #import os
 #import chess.pgn
-#import displaycode.lcd_main as lcd
+#import lcd_main as lcd
 
 from log import *
 import speech_recognition as sr
@@ -9,8 +9,6 @@ import chess.engine
 
 from phrase import *
 from parser import *
-
-#from pocketsphinx import LiveSpeech, get_model_path
 
 class Daemon:
     def __init__(self):
@@ -22,10 +20,9 @@ class Daemon:
         self.engine = False
         self.side = None
 
-        # when the button is pushed 
-# need button integration 
         while self.listening:
             data = self.listen()
+            print("data: ", data)
 
             if self.gameOn and self.engine != False:
                 if self.side != self.l.getNextColor(): #if i am playing white and the mv rn black

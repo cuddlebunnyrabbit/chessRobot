@@ -9,6 +9,7 @@ def cleanData(command):
         while char in command: #remove space
             command = command.replace(char, '')
     command = command.lower() #lowercase
+    print("clean data: ", command)
     return(command)
   
 def parse(command):
