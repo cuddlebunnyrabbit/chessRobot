@@ -2,6 +2,7 @@ import chess
 import chess.pgn
 #from MotorCode import *
 from shadowRealm import *
+from chess.engine import *
 
 class Log:
     def __init__(self):
@@ -40,7 +41,7 @@ class Log:
         }
 
     
-    def makeMove(self, move):
+    def makeMove(self, move): #make a normal move or review 
         currmove = chess.Move.from_uci(move)
 
         if currmove in self.board.legal_moves:
@@ -53,7 +54,7 @@ class Log:
         else:
             print("invalid or illegal move! try again plz")
 
-    def get_review_iter(self, pgn):
+    def get_review_iter(self, pgn): #helper method to get the iter for review and spectate
         temp = chess.pgn.read_game(open(pgn)).mainline_moves()
         temp = iter(temp)
         return temp
@@ -66,6 +67,8 @@ class Log:
             return piece.symbol()
         return None #returns Q or q! 
 
+
+    ########### helper methods for reset 
     def find_storage(self, currloc): #should give the temp storage of a piece 
         for rank in [3, 4, 5, 6]:
             file = currloc[0]
@@ -133,7 +136,9 @@ class Log:
         self.export()
         self.restart_game()
         #restart the game from new 
+    #helper methods for reset 
 
+    #methods for motor in diff conditions
     def motorReset(self, move): # this is used to move the pieces during resets
         origin = move[:2]
         destination = move[2:4]
@@ -199,15 +204,18 @@ class Log:
                 #shadowRealm.reinstate(destination, promotion_piece)
                 print("this is a promotion: ", promotion_piece)
                 self.shadow.reinstate(promotion_piece)
+    #methods for motor in diff conditions 
 
-    def export(self):
+
+    def export(self): #methods for outside daemon and also for reset  
         print(self.game, file=open("export.pgn", "w"), end="\n\n")
         print(self.game, file=open("export_log.pgn", "a"), end="\n\n")   
 
-    def restart_game(self):
+    def restart_game(self): #used by reset as well as other functions
         self.game = chess.pgn.Game()
         self.board = chess.Board()
         self.node = None
+
 
     #communicates with lcd 
     def getNextColor(self):
@@ -241,6 +249,7 @@ class Log:
 
     def getGame(self):
         return self.game
+
 
 '''
 l = Log()

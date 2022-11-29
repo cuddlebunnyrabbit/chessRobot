@@ -13,13 +13,13 @@ TO DO:
 
 ASK OTHERS FOR HELP:
 * why is log so disorganized?
+* implement resign? alterations of headers are not allowed?
 
 EXTRA CREDIT (NOT REQUIRED BUT WE NEED IF WE WANT TO WINNNN)
 * fix problem with review and spectate rewriting over the game we just played 
-* implement resign 
 * implement engine to user playing 
     * implement user choice of white or black against engine 
 
-
+AFTER PRESENTATION:
 * implement analysis (only on if we are reviewing or spectating )
 * can you get bluetooth working? 

@@ -8,7 +8,8 @@ key_phrase = [ #must be preceeded by "chessbot so chessbot doesn't get confused"
     "reset",
     "review", #this is extracredit to review the previous game you got 
     "spectate", #this is to load a pgn and play the game 
-    "engine" #this is another extracredit to play against an engine 
+    "blackengine",
+    "whiteengine"
     ]
 
 replacement_dictionary = { #contain numbers + pieces to be replaced for notation

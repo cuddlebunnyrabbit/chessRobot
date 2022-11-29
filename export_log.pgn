@@ -1,12 +1,4 @@
-[Event "?"]
-[Site "?"]
-[Date "????.??.??"]
-[Round "?"]
-[White "?"]
-[Black "?"]
-[Result "*"]
 
-1. e4 *
 
 [Event "?"]
 [Site "?"]
@@ -16,7 +8,7 @@
 [Black "?"]
 [Result "*"]
 
-1. e4 *
+1. e4 d6 2. d4 Nf6 *
 
 [Event "?"]
 [Site "?"]
@@ -26,7 +18,7 @@
 [Black "?"]
 [Result "*"]
 
-1. e4 a5 *
+1. e4 d5 2. exd5 *
 
 [Event "?"]
 [Site "?"]
@@ -36,35 +28,5 @@
 [Black "?"]
 [Result "*"]
 
-1. h4 *
-
-[Event "?"]
-[Site "?"]
-[Date "????.??.??"]
-[Round "?"]
-[White "?"]
-[Black "?"]
-[Result "*"]
-
-1. h4 *
-
-[Event "?"]
-[Site "?"]
-[Date "????.??.??"]
-[Round "?"]
-[White "?"]
-[Black "?"]
-[Result "*"]
-
-1. a4 *
-
-[Event "?"]
-[Site "?"]
-[Date "????.??.??"]
-[Round "?"]
-[White "?"]
-[Black "?"]
-[Result "*"]
-
-1. e4 d6 2. d4 Nf6 3. Nc3 g6 4. Be3 *
+1. e4 a6 2. d4 a5 3. Nf3 d5 4. exd5 e5 5. dxe5 Qd7 6. Be3 Qxd5 7. Qxd5 *
 
