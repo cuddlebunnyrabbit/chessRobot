@@ -3,6 +3,8 @@ import chess.pgn
 #from MotorCode import *
 from shadowRealm import *
 from chess.engine import *
+from led import *
+import lcd_main as lcd
 
 class Log:
     def __init__(self):
@@ -42,9 +44,10 @@ class Log:
 
     
     def makeMove(self, move): #make a normal move or review 
-        currmove = chess.Move.from_uci(move)
 
+        currmove = chess.Move.from_uci(move)
         if currmove in self.board.legal_moves:
+            #led.blue()
             self.motorMove(move) #do not continue until motorMove has terminated! 
             if self.node == None: #fist move
                 self.node = self.game.add_variation(currmove)
@@ -52,7 +55,9 @@ class Log:
                 self.node = self.node.add_variation(currmove)
             self.board.push_uci(move) 
         else:
-            print("invalid or illegal move! try again plz")
+            #led.red()
+            #lcd.printMessage(["Illegal move", "Try again"]) 
+            ...
 
     def get_review_iter(self, pgn): #helper method to get the iter for review and spectate
         temp = chess.pgn.read_game(open(pgn)).mainline_moves()
@@ -261,27 +266,4 @@ for thing in review:
     l.makeMove(str(thing))
 
 l.export()
-'''
-                
-#l.reset()
-
-
-'''
-l = Log()
-l.makeMove("e2e4")
-l.makeMove("f7f5")
-l.makeMove("e4e5")
-l.makeMove("d7d5")
-l.makeMove("e5d6")
-l.makeMove("e7e5")
-l.makeMove("d6c7")
-l.makeMove("f8b4")
-l.makeMove("c7b8q")
-l.makeMove("g8e7")
-l.makeMove("d1f3")
-l.makeMove("e8g8")
-print(l.getBoard())
-print(l.getGame())
-print(l.getTurn())
-print(l.getCondensedStatus())
 '''

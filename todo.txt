@@ -5,11 +5,13 @@ FINISHED:
 * reset all pieces work? 
 * can you write a file with the game before termination or changing modes
 * implement review as opposed to spectate 
+* control system work in daemon: reset if you switch modes to review from play 
+* make led and lcd comments. activate during testing 
 
 TO DO:
 * user can only make inputs when the machine has executed the move
-* test with light
-* control system work in daemon: reset if you switch modes to review from play 
+* test with led 
+* test with lcd
 
 ASK OTHERS FOR HELP:
 * why is log so disorganized?

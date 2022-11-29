@@ -1,48 +1,44 @@
 from gpiozero import RGBLED
 from time import sleep
 
+RED = (0,1,1)
+BLUE = (1,1,0)
+GREEN = (1,0,1)
+WHITE = (0,0,0)
+CYAN = (1,0,0)
+PURPLE = (0,1,0)
+OFF = (1,1,1)
 
-class Led:
-    def __init__(self):
-        #self.color = (1,1,1)
-        self.RED = (0,1,1)
-        self.BLUE = (1,1,0)
-        self.GREEN = (1,0,1)
-        self.WHITE = (0,0,0)
-        self.CYAN = (1,0,0)
-        self.PURPLE = (0,1,0)
-        self.OFF = (1,1,1)
-        
-        self.led = RGBLED(17,18,22,active_high=False)
+led = RGBLED(17,18,22,active_high=False)
 
-    def green(self):
-        self.color = self.GREEN
-        
-    def red(self):
-        self.led.color = self.RED
+def green():
+    led.color = GREEN
+
+def red():
+    led.color = RED
+
     
-    def blue(self):
-        self.led.color = self.BLUE
-        
-    def flashing(self):
-        for i in range(2):
-            self.led.color = self.WHITE
-            sleep(1)
-            self.led.color = self.CYAN
-            sleep(1)
-            self.led.color = self.BLUE
-            sleep(1)
-            self.led.color = self.GREEN
-            sleep(1)
-            self.led.color = self.PURPLE
-            sleep(1)
-            self.led.color = self.RED
-            sleep(1)
-        self.off()
-            
+def blue():
+    led.color = BLUE
     
-    def off(self):
-        self.led.color = self.OFF
+def flashing():
+    for i in range(1):
+        led.color = WHITE
+        sleep(0.25)
+        led.color = CYAN
+        sleep(0.25)
+        led.color = BLUE
+        sleep(0.25)
+        led.color = GREEN
+        sleep(0.25)
+        led.color = PURPLE
+        sleep(0.25)
+        led.color = RED
+        sleep(0.25)
+    off()
+        
+def off():
+    led.color = OFF
     
 
 '''
@@ -52,9 +48,3 @@ led.flashing()
 print("I have finished execution")
 
 '''
-        
-
-    
-    
-    
-    
