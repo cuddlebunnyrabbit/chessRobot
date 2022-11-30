@@ -4,7 +4,7 @@ import chess.pgn
 from shadowRealm import *
 from chess.engine import *
 from led import *
-import lcd_main as lcd
+#import lcd_main as lcd
 
 class Log:
     def __init__(self):

@@ -60,7 +60,7 @@ class Daemon:
                             ...
                             #led.blue() achieve the flashing aesthetic
                             
-            if self.gameOn and self.review != False: # if the self is reviewing a game
+            if self.gameOn and self.review != False:  # if the self is reviewing a game
                 try:
                     nextmv = next(self.review)
                     self.l.makeMove(str(nextmv))
@@ -141,18 +141,22 @@ class Daemon:
                 ...
 
     def listen(self):
-        with sr.Microphone() as source:
+        with sr.Microphone(sample_rate = 16000) as source:
             print('Speak Anything:')
             #led.green()
             audio = None
             TIME_LIMIT = 5
-            try: 
+            try:
+                #print("I am here")
+                self.r.energy_threshold = 900
+                self.r.adjust_for_ambient_noise(source)
                 audio = self.r.listen(source, TIME_LIMIT, phrase_time_limit= TIME_LIMIT)
+                #print("I am passsssssssssed")
                 try:
                     print("recognizing......")
                     #led.blue() #can't put new info 
                     data = self.r.recognize_google(audio)#convert audio to text
-                    #print('I Heard: {}'.format(data))
+                    print('I Heard: {}'.format(data))
                     return data
                 except:
                     #led.red()
@@ -160,5 +164,5 @@ class Daemon:
                     return None
             except:
                 return None
-
+        
 d = Daemon()
