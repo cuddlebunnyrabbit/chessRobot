@@ -1,7 +1,7 @@
 from chess import *
 #import os
 #import chess.pgn
-#import lcd_main as lcd
+import lcd_main as lcd
 
 from log import *
 import speech_recognition as sr
@@ -66,12 +66,11 @@ class Daemon:
                     self.l.makeMove(str(nextmv))
                     self.l.getFullStatus()
                 except:
-                    #lcd.printMessage(["Depleted", "Game"])
-                    ...
+                    lcd.printMessage(["Depleted", "Game"])
 
     def checkKeyPhrase(self, phrase):
         if phrase == "terminate": #if i hear terminate
-            #lcd.printMessage(["Terminated", "Game"])
+            lcd.printMessage(["Terminated", "Game"])
             self.gameOn = False
             self.review = False
             self.listening = False
@@ -81,24 +80,23 @@ class Daemon:
                 self.l.restart_game()
 
         elif phrase == "resume": 
-            #lcd.printMessage(["Resume Game", self.l.getCondensedStatus()])
+            lcd.printMessage(["Resume Game", self.l.getCondensedStatus()])
             self.l.getFullStatus()
             self.gameOn = True
             
         elif phrase == "pause":
-            #self.l.getFullStatus()
             self.gameOn = False
-            #lcd.printMessage(["Paused Game", self.l.getCondensedStatus()])
+            lcd.printMessage(["Paused Game", self.l.getCondensedStatus()])
             
         elif phrase == "reset":
             if self.gameOn:
                 #led.red()
-                #lcd.printMessage(["Game in progress", "Terminate game?"])
+                lcd.printMessage(["Game in progress", "Terminate game?"])
                 print("game in progress, pause game first?")
                 
             else:
                 #led.blue()
-                #lcd.printMessage(["Reseting Game","Plz be patient"])
+                lcd.printMessage(["Reseting Game","Plz be patient"])
                 self.l.reset()
                 self.review = False #stops reviewing
                 self.engine = False
@@ -110,7 +108,7 @@ class Daemon:
                 self.review = self.l.get_review_iter(pgn)
             else:
                 #led.red()
-                #lcd.printMessage(["Error:", "Already reviewing"])
+                lcd.printMessage(["Error:", "Already reviewing"])
                 print("game in progress, pause game first?")
         
         elif phrase == "review": 
@@ -119,25 +117,25 @@ class Daemon:
                 self.review = self.l.get_review_iter(pgn)
             else:
                 #led.red()
-                #lcd.printMessage(["Error:", "Already reviewing"])
+                lcd.printMessage(["Error:", "Already reviewing"])
                 ...
 
         elif phrase == "blackengine":
-            self.engine = chess.engine.SimpleEngine.popen_uci(r"/usr/local/Cellar/stockfish/15/bin/stockfish")
+            self.engine = chess.engine.SimpleEngine.popen_uci(r"/home/pi/Downloads/stockfish_15_linux_x64_bmi2/stockfish_15_x64_bmi2")
             if self.side == None:
                 self.side = "B"
             else:
                 #led.red()
-                #lcd.printMessage(["Error:", "Engine in progress"])
+                lcd.printMessage(["Error:", "Engine in progress"])
                 ...
 
         elif phrase == "whiteengine":
-            self.engine = chess.engine.SimpleEngine.popen_uci(r"/usr/local/Cellar/stockfish/15/bin/stockfish")
+            self.engine = chess.engine.SimpleEngine.popen_uci(r"/home/pi/Downloads/Stockfish-sf_15/src/incbin/incbin.h")
             if self.side == None:
                 self.side = "W"
             else:
                 #led.red()
-                #lcd.printMessage(["Error:", "Engine in progress"])
+                lcd.printMessage(["Error:", "Engine in progress"])
                 ...
 
     def listen(self):

@@ -236,10 +236,10 @@ class Log:
             return "B"
 
     def getTurn(self): #increments after black moves. starts at 1
-        return self.board.fullmove_number
+        return str(self.board.fullmove_number)
 
     def getCondensedStatus(self):
-        return "Next Move:", self.getTurn(), ".", self.getNextColor()
+        return "Next Move:" + self.getTurn() + "." + self.getNextColor()
 
     def getFullStatus(self): #helper method for chessDaemon
         print(self.shadow.board)
