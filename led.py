@@ -16,6 +16,7 @@ def green():
 
 def red():
     led.color = RED
+    sleep(1)
 
     
 def blue():

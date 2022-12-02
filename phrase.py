@@ -1,6 +1,4 @@
 key_phrase = [ #must be preceeded by "chessbot so chessbot doesn't get confused"
-    "start", #i don't think we need this? can we just automatically start
-    #once the button is pushed?
     "terminate",
     "pause",
     "resume",
@@ -18,7 +16,7 @@ replacement_dictionary = { #contain numbers + pieces to be replaced for notation
     "delta": "d",
     "echo": "e",
     "foxtrot": "f",
-    "golf": "g",
+    "gamma": "g",
     "hotel": "h",
 
     "one": "1",
