@@ -3,9 +3,9 @@ import chess.pgn
 #from MotorCode import *
 from shadowRealm import *
 from chess.engine import *
-import led as led
-import lcd_main as lcd
-import motorlib
+#import led as led
+#import lcd_main as lcd
+#import motorlib
 
 
 class Log:
@@ -15,48 +15,6 @@ class Log:
         self.board = chess.Board()
         self.shadow = shadowRealm()
         
-        #BEGINNING OF JERRY SHENANINGS
-        
-        self.motorsys = motorlib.A4988Nema(13, 19, (5, 5, 5), "DRV8825")  #This motor definition will double as a system when wanting diag movement
-        self.motory = motorlib.A4988Nema(22, 23, (25, 25, 25), "DRV8825") #simply y motor
-        motorsys.setALTPins(22, 23) #Tell motorsys which pins to use when moving diagonally to coordinate
-        
-        self.xEnablePin = 24 #Enable pin for force stopping flow of power to the x stepper motor
-        self.yEnablePin = 26 # Enable pin for force stopping flow of power to the y stepper motor
-
-        EMpin = 12 #pin for controlling Electromagnet relay
-        
-        GPIO.setup(self.xEnablePin, GPIO.OUT)
-        GPIO.setup(self.yEnablePin, GPIO.OUT)
-        GPIO.setup(self.EMpin, GPIO.OUT)
-        
-        GPIO.output(xEnablePin, GPIO.HIGH) #Default stepper motors to off, (HIGH = OFF), (LOW = ON)
-        GPIO.output(yEnablePin, GPIO.HIGH)
-        
-        self.column_to_step_dict = {
-            "a": 45,
-            "b": 330,
-            "c": 600,
-            "d": 880,
-            "e": 1160,
-            "f": 1435,
-            "g": 1710,
-            "h": 1985
-        }
-        
-        self.row_to_step_dict = {
-            "8": 0,
-            "7": 275,
-            "6": 550,
-            "5": 825,
-            "4": 1105,
-            "3": 1390,
-            "2": 1675,
-            "1": 1955
-        }
-        
-        #END OF JERRY SHENANINGS
-
         W_PAWN = ['a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2']
         W_ROOK = ['a1', 'h1']
         W_KNIGHT = ['b1', 'g1']
