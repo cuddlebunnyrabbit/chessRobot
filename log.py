@@ -3,8 +3,10 @@ import chess.pgn
 #from MotorCode import *
 from shadowRealm import *
 from chess.engine import *
-from led import *
-#import lcd_main as lcd
+import led as led
+import lcd_main as lcd
+import motorlib
+
 
 class Log:
     def __init__(self):
@@ -12,6 +14,48 @@ class Log:
         self.node = None
         self.board = chess.Board()
         self.shadow = shadowRealm()
+        
+        #BEGINNING OF JERRY SHENANINGS
+        
+        self.motorsys = motorlib.A4988Nema(13, 19, (5, 5, 5), "DRV8825")  #This motor definition will double as a system when wanting diag movement
+        self.motory = motorlib.A4988Nema(22, 23, (25, 25, 25), "DRV8825") #simply y motor
+        motorsys.setALTPins(22, 23) #Tell motorsys which pins to use when moving diagonally to coordinate
+        
+        self.xEnablePin = 24 #Enable pin for force stopping flow of power to the x stepper motor
+        self.yEnablePin = 26 # Enable pin for force stopping flow of power to the y stepper motor
+
+        EMpin = 12 #pin for controlling Electromagnet relay
+        
+        GPIO.setup(self.xEnablePin, GPIO.OUT)
+        GPIO.setup(self.yEnablePin, GPIO.OUT)
+        GPIO.setup(self.EMpin, GPIO.OUT)
+        
+        GPIO.output(xEnablePin, GPIO.HIGH) #Default stepper motors to off, (HIGH = OFF), (LOW = ON)
+        GPIO.output(yEnablePin, GPIO.HIGH)
+        
+        self.column_to_step_dict = {
+            "a": 45,
+            "b": 330,
+            "c": 600,
+            "d": 880,
+            "e": 1160,
+            "f": 1435,
+            "g": 1710,
+            "h": 1985
+        }
+        
+        self.row_to_step_dict = {
+            "8": 0,
+            "7": 275,
+            "6": 550,
+            "5": 825,
+            "4": 1105,
+            "3": 1390,
+            "2": 1675,
+            "1": 1955
+        }
+        
+        #END OF JERRY SHENANINGS
 
         W_PAWN = ['a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2']
         W_ROOK = ['a1', 'h1']
@@ -41,13 +85,18 @@ class Log:
             'q': B_QUEEN,
             'k': B_KING,
         }
+        
+    #Coordinate input is a string (i.e. "a8")
+    #Return tuple ordered (X, Y) of chess coordinate converted into motor coordinates
+    def coord_to_steps(self, coordinate):
+        return (self.column_to_step_dict[coordinate[0].lower()], self.row_to_step_dict[coordinate[1].lower()])
 
     
     def makeMove(self, move): #make a normal move or review 
 
         currmove = chess.Move.from_uci(move)
-        if currmove in self.board.legal_moves:
-            #led.blue()
+        if currmove in self.board.legal_moves: 
+            led.blue()
             self.motorMove(move) #do not continue until motorMove has terminated! 
             if self.node == None: #fist move
                 self.node = self.game.add_variation(currmove)
@@ -55,9 +104,8 @@ class Log:
                 self.node = self.node.add_variation(currmove)
             self.board.push_uci(move) 
         else:
-            #led.red()
-            #lcd.printMessage(["Illegal move", "Try again"]) 
-            ...
+            lcd.printMessage(["Illegal move", "Try again"])
+            led.red()
 
     def get_review_iter(self, pgn): #helper method to get the iter for review and spectate
         temp = chess.pgn.read_game(open(pgn)).mainline_moves()
@@ -167,10 +215,16 @@ class Log:
     #motorMove: this is used to make a normal move under normal circumstances like play and engine play
     def motorMove(self, move):
         origin = move[:2]
-        destination = move[2:4] #check your assumptions! not allways will be string be 4!
+        destination = move[2:4] #check your assumptions! not always will be string be 4!
         currmove = chess.Move.from_uci(move)
+        
+        
+        
+        
+        
 
-        if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove): 
+        if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove):
+            lcd.printMessage(["Capture:" + move,self.getCondensedStatusCurrent()])
             self.shadow.banash(self.getPiece(destination))
             print("this is a normal capture: ", (destination, self.getPiece(destination)))
             #NOTE: SELF.GETPIECE IS SHOWN AS "P" OR LOWERCASE 
@@ -181,6 +235,7 @@ class Log:
             #MotorCode.push_move(origin, destination, True)
 
         elif self.board.is_castling(currmove):
+            lcd.printMessage(["Castleing:",self.getCondensedStatusCurrent()])
             print("this is a castle: ", (origin, destination, False))
             #MotorCode.push_move(origin, destination, False) #move the king normally  
 
@@ -198,6 +253,7 @@ class Log:
             print("this is en_passant 1st move motor code: ", (origin, destination, False))
                 
         else: #under a normal move
+            lcd.printMessage(["Move:" + move,self.getCondensedStatusCurrent()])
             print("this is a normal move: ", (origin, destination, False))
             #MotorCode.push_move(origin, destination, False)
 
@@ -238,7 +294,10 @@ class Log:
     def getTurn(self): #increments after black moves. starts at 1
         return str(self.board.fullmove_number)
 
-    def getCondensedStatus(self):
+    def getCondensedStatusCurrent(self):
+        return "Current Move:" + self.getTurn() + "." + self.getNextColor()
+    
+    def getCondensedStatusNext(self):
         return "Next Move:" + self.getTurn() + "." + self.getNextColor()
 
     def getFullStatus(self): #helper method for chessDaemon
@@ -246,8 +305,8 @@ class Log:
         print(self.getGame())
         print(self.getBoard())
 
-    def getGameStatus(self):
-        return #who won the game?
+    #def getGameStatus(self):
+        #return #who won the game?
 
     def getBoard(self):
         return self.board
