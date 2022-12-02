@@ -122,7 +122,7 @@ class Daemon:
                 
 
         elif phrase == "blackengine":
-            self.engine = chess.engine.SimpleEngine.popen_uci(r"/home/pi/Downloads/stockfish_15_linux_x64_bmi2")
+            self.engine = chess.engine.SimpleEngine.popen_uci(r"/usr/games/stockfish")
             if self.side == None:
                 self.side = "B"
             else:
@@ -131,18 +131,12 @@ class Daemon:
                 
 
         elif phrase == "whiteengine":
-            path = r"./stockfish_15_linux_x64_bmi2/stockfish_15_x64_bmi2"
-            assert os.path.isfile(path)
-            with open(path, "r") as f:
-                pass
-            
-            self.engine = chess.engine.SimpleEngine.popen_uci(path)
+            self.engine = chess.engine.SimpleEngine.popen_uci(r"/usr/games/stockfish")
             if self.side == None:
                 self.side = "W"
             else:
                 lcd.printMessage(["Error:", "Engine in progress"])
                 led.red()
-                
 
     def listen(self):
         with sr.Microphone(sample_rate = 16000) as source:
