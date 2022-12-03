@@ -6,6 +6,7 @@ class shadowRealm:
     def __init__(self):
         self.board = self.shadowBoard()
 
+    #add a piece from to shadowrealm normal board and tell motorcode what to do 
     def banash(self, piece): 
         #shadowRealm.banash(destination, self.getPiece(destination))
         coordinate = self.board.determine_coordinates(piece, True)
@@ -13,6 +14,7 @@ class shadowRealm:
         print(self.board)
         #MotorCode.push_move(origin, coordinate, True)
 
+    #add a piece to normal board from shadworealm 
     def reinstate(self, piece): #only used for promotion
         coordinate = self.board.determine_coordinates(piece, False)
         if coordinate: #if the coordinate even exists, you can get something moved to the board
@@ -43,6 +45,7 @@ class shadowRealm:
             self.data = []
             self.populate()
 
+        #populate all the squares in the array with empty squares 
         def populate(self):
             for i in range(len(self.ROW)):
                 col = []
@@ -50,6 +53,7 @@ class shadowRealm:
                     col.append(".")
                 self.data.append(col)
 
+        #represent the self 
         def __repr__(self):
             s = ""
             for i in range(len(self.ROW)):
@@ -139,49 +143,3 @@ class shadowRealm:
             else: 
                 #print("where is my queen or major piece?")
                 return self.get_piece_location(piece)
-
-
-'''
-s = shadowRealm()
-board = s.board
-#board.set("x3", "P")
-
-s.banash("Q")
-print(board)
-s.banash("P")
-print(board)
-s.banash("p")
-print(board)
-s.banash("k")
-print(board)
-s.banash("k")
-print(board)
-s.banash("k")
-print(board)
-s.banash("k")
-print(board)
-s.banash("Q")
-print(board)
-s.banash("r")
-print(board)
-s.banash("k")
-print(board)
-s.banash("k")
-print(board)
-s.banash("N")
-print(board)
-s.banash("N")
-print(board)
-s.banash("B")
-print(board)
-s.banash("N")
-print(board)
-s.banash("R")
-print(board)
-s.reinstate("Q")
-print(board)
-s.reinstate("Q")
-print(board)
-
-'''
-

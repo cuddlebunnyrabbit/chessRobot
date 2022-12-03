@@ -13,6 +13,7 @@ import led as led
 
 import os
 
+#daemon runs listing loop when activated
 class Daemon:
     def __init__(self):
         self.r = sr.Recognizer()
@@ -23,31 +24,29 @@ class Daemon:
         self.engine = False
         self.side = None
 
+        #while not terminated, always listening
         while self.listening:
             led.green()
             data = self.listen()
             print("data: ", data)
 
             if self.gameOn and self.engine != False:
-                print("self.gameone playing against engine")
-                if self.side != self.l.getNextColor(): #if i am playing white and the mv rn black
+                #if i am playing white and the mv rn black
+                if self.side != self.l.getNextColor(): 
                     led.blue()
                     result = self.engine.play(self.l.board, chess.engine.Limit(time=0.1))
                     self.l.makeMove(result.move.uci())
                     self.l.getFullStatus()
 
             if data != None:
-                #checks if you have key command
                 command = parse(cleanData(data))
-                #lcd.printmessage(("I Parsed", str(command)))
-                print("This is what I parsed:", str(command))
-
-                if command in key_phrase:
+                #print("This is what I parsed:", str(command))
+                if command in key_phrase: #checks if you have key command
                     led.flashing()
                     self.checkKeyPhrase(command)
-
                 else:
-                    if self.gameOn and self.review == False: #when it is game on and not during review
+                     #when it is game on and not during review
+                    if self.gameOn and self.review == False:
                         if command != None:
                             if self.engine != False:
                                 if self.side == self.l.getNextColor():
@@ -59,7 +58,7 @@ class Daemon:
                                 self.l.makeMove(command)
                                 self.l.getFullStatus()
                         else:
-                            led.blue() #achieve the flashing aesthetic
+                            led.blue()
                             
             if self.gameOn and self.review != False:  # if the self is reviewing a game
                 try:
@@ -69,6 +68,7 @@ class Daemon:
                 except:
                     lcd.printMessage(["Depleted", "Game"])
 
+    #input: String(phrase) determinds the action related for each key phrase
     def checkKeyPhrase(self, phrase):
         if phrase == "terminate": #if i hear terminate
             lcd.printMessage(["Terminated", "Game"])
@@ -117,9 +117,8 @@ class Daemon:
                 pgn = "export.pgn"
                 self.review = self.l.get_review_iter(pgn)
             else:
-                #lcd.printMessage(["Error:", "Already reviewing"])
+                lcd.printMessage(["Error:", "Already reviewing"])
                 led.red()
-                
 
         elif phrase == "blackengine":
             self.engine = chess.engine.SimpleEngine.popen_uci(r"/usr/games/stockfish")
@@ -129,7 +128,6 @@ class Daemon:
                 lcd.printMessage(["Error:", "Engine in progress"])
                 led.red()
                 
-
         elif phrase == "whiteengine":
             self.engine = chess.engine.SimpleEngine.popen_uci(r"/usr/games/stockfish")
             if self.side == None:
@@ -138,6 +136,7 @@ class Daemon:
                 lcd.printMessage(["Error:", "Engine in progress"])
                 led.red()
 
+    #listen to all inputs and controls the lights accordingly
     def listen(self):
         with sr.Microphone(sample_rate = 16000) as source:
             print('Speak Anything:')
@@ -150,8 +149,8 @@ class Daemon:
                 audio = self.r.listen(source, TIME_LIMIT, phrase_time_limit= TIME_LIMIT)
                 try:
                     print("recognizing......")
-                    led.blue() #can't put new info 
-                    data = self.r.recognize_google(audio)#convert audio to text
+                    led.blue() 
+                    data = self.r.recognize_google(audio) #convert audio to text
                     print('I Heard: {}'.format(data))
                     return data
                 except:

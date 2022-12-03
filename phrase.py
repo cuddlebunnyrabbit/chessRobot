@@ -1,3 +1,5 @@
+
+#list of key phrase to look for before moves 
 key_phrase = [ #must be preceeded by "chessbot so chessbot doesn't get confused"
     "terminate",
     "pause",
@@ -9,6 +11,7 @@ key_phrase = [ #must be preceeded by "chessbot so chessbot doesn't get confused"
     "whiteengine"
     ]
 
+#list of words to be replaced for the chess notation 
 replacement_dictionary = { #contain numbers + pieces to be replaced for notation
     "alpha": "a",
     "bravo": "b",

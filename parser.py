@@ -1,7 +1,7 @@
-#from re import S
 from phrase import *
 from chess import *
 
+#input: String(command) cleans the data from spaces, dashes, and periods
 def cleanData(command):
     REMOVE_CHARACTERS = [" ", "-", "."]
 
@@ -11,7 +11,9 @@ def cleanData(command):
     command = command.lower() #lowercase
     print("clean data: ", command)
     return(command)
-  
+
+#String(command) checks if the clean string is an actual move or a key phrase, then deal
+#with them accordingly
 def parse(command):
     for word in key_phrase:
         if word in command:
