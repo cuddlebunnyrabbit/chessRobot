@@ -26,7 +26,7 @@ class shadowRealm:
         def __init__(self):
             #initialize and make coordinates for each
             self.ROW = [1, 2, 3, 4, 5, 6, 7, 8]
-            self.COLUMN = ['x', 'y', 'z']
+            self.COLUMN = ['x', 'y']
 
             #White + Black starts are in the middle 
             self.WHITE_START = 4
@@ -140,6 +140,7 @@ class shadowRealm:
                 #print("where is my queen or major piece?")
                 return self.get_piece_location(piece)
 
+
 '''
 s = shadowRealm()
 board = s.board
@@ -151,9 +152,21 @@ s.banash("P")
 print(board)
 s.banash("p")
 print(board)
+s.banash("k")
+print(board)
+s.banash("k")
+print(board)
+s.banash("k")
+print(board)
+s.banash("k")
+print(board)
 s.banash("Q")
 print(board)
 s.banash("r")
+print(board)
+s.banash("k")
+print(board)
+s.banash("k")
 print(board)
 s.banash("N")
 print(board)
@@ -167,21 +180,8 @@ s.banash("R")
 print(board)
 s.reinstate("Q")
 print(board)
-s.banash("N")
+s.reinstate("Q")
 print(board)
-s.banash("B")
-print(board)
-s.banash("N")
-print(board)
-s.banash("N")
-print(board)
-s.banash("N")
-print(board)
-s.banash("B")
-print(board)
-s.banash("R")
-print(board)
-s.banash("Q")
-print(board)
+
 '''
 
