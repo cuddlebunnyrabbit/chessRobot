@@ -56,6 +56,7 @@ class shadowRealm:
                     col.append(".")
                 self.data.append(col)
 
+        #represent the self 
         def __repr__(self):
             s = ""
             for i in range(len(self.ROW)):
@@ -145,49 +146,3 @@ class shadowRealm:
             else: 
                 #print("where is my queen or major piece?")
                 return self.get_piece_location(piece)
-
-'''
-s = shadowRealm()
-board = s.board
-#board.set("x3", "P")
-
-s.banash("Q")
-print(board)
-s.banash("P")
-print(board)
-s.banash("p")
-print(board)
-s.banash("Q")
-print(board)
-s.banash("r")
-print(board)
-s.banash("N")
-print(board)
-s.banash("N")
-print(board)
-s.banash("B")
-print(board)
-s.banash("N")
-print(board)
-s.banash("R")
-print(board)
-s.reinstate("Q")
-print(board)
-s.banash("N")
-print(board)
-s.banash("B")
-print(board)
-s.banash("N")
-print(board)
-s.banash("N")
-print(board)
-s.banash("N")
-print(board)
-s.banash("B")
-print(board)
-s.banash("R")
-print(board)
-s.banash("Q")
-print(board)
-'''
-

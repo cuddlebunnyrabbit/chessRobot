@@ -6,7 +6,6 @@ import led as led
 import lcd_main as lcd
 import motorlib
 
-
 class Log:
     def __init__(self): #Initialize constents 
         self.game = chess.pgn.Game()
@@ -43,6 +42,7 @@ class Log:
             'k': B_KING,
         }
         
+    
     #input: String(move) check if move from user or review game is normal move. 
     #take corret actions if it is
     def makeMove(self, move): 
@@ -206,7 +206,6 @@ class Log:
         elif self.board.is_en_passant(currmove):
             capturedpawnloc = destination[0] + origin[1] #move the piece normally
             #MotorCode.push_move(origin, destination, False) 
-            self.shadow.banash(self.getPiece(capturedpawnloc)) #move the shadowrealm
             print("this is en_passant 1st move motor code: ", (origin, destination, False))
             self.shadow.banash(self.getPiece(capturedpawnloc)) #move the shadowrealm
                 

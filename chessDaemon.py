@@ -15,6 +15,7 @@ import os
 
 
 
+#daemon runs listing loop when activated
 class Daemon:
     def __init__(self):
         self.r = sr.Recognizer()
