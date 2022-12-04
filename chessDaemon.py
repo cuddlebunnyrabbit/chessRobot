@@ -1,4 +1,5 @@
 from chess import *
+
 #import os
 #import chess.pgn
 #import lcd_main as lcd
@@ -10,8 +11,9 @@ import chess.engine
 from phrase import *
 from parser import *
 import led as led
-
 import os
+
+
 
 class Daemon:
     def __init__(self):
@@ -22,6 +24,8 @@ class Daemon:
         self.review = False
         self.engine = False
         self.side = None
+        
+        
 
         while self.listening:
             led.green()

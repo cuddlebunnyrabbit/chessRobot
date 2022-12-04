@@ -1,25 +1,28 @@
 #from MotorCode import *
 from chess import *
+import motorlib
 
 class shadowRealm:
 
     def __init__(self):
         self.board = self.shadowBoard()
 
-    def banash(self, piece): 
+    def banash(self, piece, origin): 
         #shadowRealm.banash(destination, self.getPiece(destination))
         coordinate = self.board.determine_coordinates(piece, True)
         self.board.set(coordinate, piece)
         print(self.board)
-        #MotorCode.push_move(origin, coordinate, True)
+        motorlib.MotorSys.push_move(origin, coordinate, True)
 
-    def reinstate(self, piece): #only used for promotion
+    def reinstate(self, piece, destination): #only used for promotion
         coordinate = self.board.determine_coordinates(piece, False)
         if coordinate: #if the coordinate even exists, you can get something moved to the board
             self.board.empty_square(coordinate)
             print("i already reset")
+            motorlib.MotorSys.push_move(coordinate, destination, True)
         print(self.board)
-        #MotorCode.push_move(coordinate, origin, True)
+       
+            
         #shadowRealm.reinstate(destination, promotion_piece)
 
     class shadowBoard():

@@ -1,12 +1,10 @@
 import chess
 import chess.pgn
-#from MotorCode import *
 from shadowRealm import *
 from chess.engine import *
-#import led as led
-#import lcd_main as lcd
+import led as led
+import lcd_main as lcd
 import motorlib
-
 
 class Log:
     def __init__(self):
@@ -43,6 +41,8 @@ class Log:
             'q': B_QUEEN,
             'k': B_KING,
         }
+        
+        
 
     
     def makeMove(self, move): #make a normal move or review 
@@ -174,7 +174,7 @@ class Log:
 
         if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove):
             lcd.printMessage(["Capture:" + move,self.getCondensedStatusCurrent()])
-            self.shadow.banash(self.getPiece(destination))
+            self.shadow.banash(self.getPiece(destination), destination)
             print("this is a normal capture: ", (destination, self.getPiece(destination)))
             #NOTE: SELF.GETPIECE IS SHOWN AS "P" OR LOWERCASE 
             # BUT IT IS A PIECE OBJECT NOT A STRING
@@ -198,20 +198,22 @@ class Log:
         elif self.board.is_en_passant(currmove):
             capturedpawnloc = destination[0] + origin[1] #move the piece normally
             motorlib.MotorSys.push_move(origin, destination, False) 
-            self.shadow.banash(self.getPiece(capturedpawnloc)) #move the shadowrealm
+            coordinate = self.shadow.banash(self.getPiece(capturedpawnloc), capturedpawnloc) #move the shadowrealm
+            
             print("this is en_passant 1st move motor code: ", (origin, destination, False))
                 
         else: #under a normal move
             lcd.printMessage(["Move:" + move,self.getCondensedStatusCurrent()])
             print("this is a normal move: ", (origin, destination, False))
+            print(type(origin))
             motorlib.MotorSys.push_move(origin, destination, False)
 
             if len(move) == 5: #if the move is a promotion move
                 promotion_piece = str(move[-1])
                 if int(move[-2]) == 8: #if the move is a white move
                     promotion_piece = promotion_piece.upper()
-                #shadowRealm.banash(destination, self.getPiece(destination))
-                #shadowRealm.reinstate(destination, promotion_piece)
+                shadowRealm.banash(self.getPiece(destination), destination)
+                shadowRealm.reinstate(promotion_piece, destination)
                 print("this is a promotion: ", promotion_piece)
                 self.shadow.reinstate(promotion_piece)
     #methods for motor in diff conditions 

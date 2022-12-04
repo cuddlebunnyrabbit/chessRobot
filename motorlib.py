@@ -678,6 +678,8 @@ class motorSys():
         
         move = self.delta_go_to(destination)
         
+        print(move)
+        
         self.just_move(-move[0], -move[1])
         
     def move_to_square_diag(self, destination):
@@ -826,6 +828,8 @@ class motorSys():
     
     def delta_go_to(self, destination):
         d = self.coord_to_steps(destination)
+        print("position:")
+        print(d)
         return ( self.position[0] - d[0], self.position[1] - d[1] )
     
     
@@ -856,8 +860,8 @@ class motorSys():
 
 
 MotorSys = motorSys()
-MotorSys.push_move("h8", "x8", True)
-
+MotorSys.positionset([0, 0])
+#MotorSys.push_move("a2", "a4", False)
 
 
 #print(test.delta_coordinate("a8", "b7"))

@@ -9,7 +9,7 @@ CYAN = (1,0,0)
 PURPLE = (0,1,0)
 OFF = (1,1,1)
 
-led = RGBLED(17,18,22,active_high=False)
+led = RGBLED(17,18,16,active_high=False)
 
 def green():
     led.color = GREEN
