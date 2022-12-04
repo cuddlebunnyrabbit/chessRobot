@@ -27,47 +27,7 @@ import RPi.GPIO as GPIO
 
 # ==================== CLASS SECTION ===============================
 
-#BEGINNING OF JERRY SHENANINGS
-        
-        self.motorsys = motorlib.A4988Nema(13, 19, (5, 5, 5), "DRV8825")  #This motor definition will double as a system when wanting diag movement
-        self.motory = motorlib.A4988Nema(22, 23, (25, 25, 25), "DRV8825") #simply y motor
-        self.motorsys.setALTPins(22, 23) #Tell motorsys which pins to use when moving diagonally to coordinate
-        
-        self.xEnablePin = 24 #Enable pin for force stopping flow of power to the x stepper motor
-        self.yEnablePin = 26 # Enable pin for force stopping flow of power to the y stepper motor
 
-        EMpin = 12 #pin for controlling Electromagnet relay
-        
-        GPIO.setup(self.xEnablePin, GPIO.OUT)
-        GPIO.setup(self.yEnablePin, GPIO.OUT)
-        GPIO.setup(self.EMpin, GPIO.OUT)
-        
-        GPIO.output(xEnablePin, GPIO.HIGH) #Default stepper motors to off, (HIGH = OFF), (LOW = ON)
-        GPIO.output(yEnablePin, GPIO.HIGH)
-        
-        self.column_to_step_dict = {
-            "a": 45,
-            "b": 330,
-            "c": 600,
-            "d": 880,
-            "e": 1160,
-            "f": 1435,
-            "g": 1710,
-            "h": 1985
-        }
-        
-        self.row_to_step_dict = {
-            "8": 0,
-            "7": 275,
-            "6": 550,
-            "5": 825,
-            "4": 1105,
-            "3": 1390,
-            "2": 1675,
-            "1": 1955
-        }
-        
-        #END OF JERRY SHENANINGS
 
 
 
@@ -321,7 +281,6 @@ class A4988Nema(object):
         GPIO.setup(self.direction_pin, GPIO.OUT)
         GPIO.setup(self.step_pin, GPIO.OUT)
         GPIO.output(self.direction_pin, clockwise)
-        print(clockwise)
         if self.mode_pins != False:
             GPIO.setup(self.mode_pins, GPIO.OUT)
 
@@ -398,7 +357,6 @@ class A4988Nema(object):
         
         GPIO.output(self.direction_pin, clockwiseA)
         GPIO.output(self.dir_pinALT, clockwiseB)
-        print(clockwiseA)
         if self.mode_pins != False:
             GPIO.setup(self.mode_pins, GPIO.OUT)
 
@@ -586,11 +544,325 @@ def importtest(text):
     """ testing import """
     # print(text)
     text = " "
+    
+    
+        
+class motorSys():
+    
+    def __init__(self):
+        
+        self.motorX = A4988Nema(13, 19, (5, 5, 5), "DRV8825")
+        self.motorY = A4988Nema(22, 23, (25, 25, 25), "DRV8825")
+        self.motorX.setALTPins(22, 23)
+        
+        self.xEnablePin = 24 #Enable pin for force stopping flow of power to the x stepper motor
+        self.yEnablePin = 26 # Enable pin for force stopping flow of power to the y stepper motor
+        
+        self.position = [0, 0]
+        self.position_coord = ["h", "1"]
+        
+        self.EMPin = 21
+        
+        self.column_to_step_dict = {
+            "h": 45,
+            "g": 330,
+            "f": 600,
+            "e": 880,
+            "d": 1160,
+            "c": 1435,
+            "b": 1710,
+            "a": 1985,
+            "x": 1985,
+            "y": 1985
+        }
+        
+        self.row_to_step_dict = {
+            "1": 0,
+            "2": 275,
+            "3": 550,
+            "4": 825,
+            "5": 1105,
+            "6": 1390,
+            "7": 1675,
+            "8": 1955
+        }
+        
+        self.column_to_spot = {
+            "x": 1,
+            "y": 1,
+            "a": 1,
+            "b": 2,
+            "c": 3,
+            "d": 4,
+            "e": 5,
+            "f": 6,
+            "g": 7,
+            "h": 8
+        }
+        
+        self.spot_to_column = {
+            1: "x",
+            1: "y",
+            1: "a",
+            2: "b",
+            3: "c",
+            4: "d",
+            5: "e",
+            6: "f",
+            7: "g",
+            8: "h"
+        }
+        
+        GPIO.setup(self.xEnablePin, GPIO.OUT)
+        GPIO.setup(self.yEnablePin, GPIO.OUT)
+        
+        GPIO.setup(self.EMPin, GPIO.OUT)
+        
+        GPIO.output(self.xEnablePin, GPIO.HIGH)
+        GPIO.output(self.yEnablePin, GPIO.HIGH)
+        
+        print("MotorLib Initialized!")
+        
+        
+    def push_move(self, origin, destination, abnormal_move):
+        
+        if abnormal_move:
+            self.abnormalMove(origin, destination)
+        else:
+            self.normalMove(origin, destination)
+    
+        
+        
+    def normalMove(self, origin, destination):
+        
+        self.move_to_square(origin)
+        
+        move = self.delta_coordinate(origin, destination)
+        
+        self.EMSet(True)
+        
+        if self.move_is_diagonal(origin, destination):
+            self.just_move_diag(-move[0], -move[1])
+        else:
+            self.move_to_square(destination)
+            
+        self.EMSet(False)
+        
+        
+    def abnormalMove(self, origin, destination):
+        
+        self.move_to_square(origin)
+        
+        isCapture = False
+        
+        self.select_best_origin_node(origin, destination)
+    
+        self.select_best_destination_node(origin, destination)
+        
+        if destination[0] == "x" or destination[0] == "y":
+            if destination[0] == "x":
+                self.just_move(285, 0)
+            else:
+                self.just_move(570, 0)
+            
+            if self.position[1] < self.row_to_step_dict[destination[1]]:
+                self.just_move_diag(142, 142)
+            else:
+                self.just_move_diag(142, -142)
+                
+        else:
+            self.move_to_square_diag(destination)
+        
+            
+    def move_to_square(self, destination):
+        
+        move = self.delta_go_to(destination)
+        
+        self.just_move(-move[0], -move[1])
+        
+    def move_to_square_diag(self, destination):
+        
+        move = self.delta_go_to(destination)
+        
+        self.just_move_diag(-move[0], -move[1])
+    
+    
+    def move_to_steps(self, destination):
+        
+        move = self.delta_steps(destination)
+        
+        self.just_move(-move[0], -move[1])
+        
+        
+    def select_best_origin_node(self, origin, destination):
+        
+        if origin[0] == "a":
+            if origin[1] == "1":
+                self.move_coord_to_node("a1", "b2")
+            elif origin[1] == "8":
+                self.move_coord_to_node("b7", "a8")
+        elif origin[0] == "h":
+            if origin[1] == "1":
+                self.move_coord_to_node("h1", "g2")
+            elif origin[1] == "8":
+                self.move_coord_to_node("g7", "h8")
+        else:
+            o = self.coord_to_steps(origin)
+            d = self.coord_to_steps(destination)
+            
+            if origin[1] == "1":
+                
+                if d[0] > o[0]:
+                    self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] - 1  ], str( (int(origin[1]) + 1) ) ] )
+                else:
+                    self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] + 1  ], str((int(origin[1]) + 1)) ] )
+            elif origin[1] == "8":
+                if d[0] > o[0]:
+                    self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] - 1  ], str((int(origin[1]) - 1)) ] )
+                else:
+                    self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] + 1 ], str((int(origin[1]) - 1)) ] )
+            else:
+                if d[0] >= o[0]:
+                    if d[1] >= o[1]:
+                        self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] - 1 ], str((int(origin[1]) + 1)) ] )
+                    else:
+                        self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] - 1 ], str((int(origin[1]) - 1)) ] )
+                else:
+                    if d[1] >= o[1]:
+                        self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] + 1 ], str((int(origin[1]) + 1)) ] )
+                    else:
+                        self.move_coord_to_node(origin, [ self.spot_to_column[ self.column_to_spot[ origin[0] ] + 1 ], str((int(origin[1]) - 1)) ] )
+                        
+    def select_best_destination_node(self, origin, destination):
+    
+        o = self.coord_to_steps(origin)
+        d = self.coord_to_steps(destination)
+        
+        if destination[0] == "a":
+            if d[1] > o[1]:
+                self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] + 1  ], str( (int(destination[1]) - 1) ) ]  )
+            else:
+                self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] + 1  ], str( (int(destination[1]) + 1) ) ]  )
+        elif destination[0] == "h":
+            if d[1] > o[1]:
+                self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] - 1  ], str( (int(destination[1]) - 1) ) ]  )
+            else:
+                self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] - 1  ], str( (int(destination[1]) + 1) ) ]  )
+        else:
+            if d[0] >= o[0]:
+                if d[1] >= o[1]:
+                    self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] + 1  ], str( (int(destination[1]) - 1) ) ]  )
+                else:
+                    self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] + 1  ], str( (int(destination[1]) + 1) ) ]  )
+            else:
+                if d[1] >= o[1]:
+                    self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] - 1  ], str( (int(destination[1]) - 1) ) ]  )           
+                else:
+                    self.move_to_node( destination, [ self.spot_to_column[ self.column_to_spot[ destination[0] ] - 1  ], str( (int(destination[1]) + 1) ) ]  )
+
+            
+                
+    def move_to_node(self, coordA, coordB):
+        
+        cordA = self.coord_to_steps(coordA)
+        cordB = self.coord_to_steps(coordB)
+        
+        #self.move_to_square(coordA)
+        
+        self.move_to_steps( [ round((cordA[0] + cordB[0]) / 2) , round((cordA[1] + cordB[1]) / 2) ] )
+    
+    def move_coord_to_node(self, coordA, coordB):
+        
+        cordA = self.coord_to_steps(coordA)
+        cordB = self.coord_to_steps(coordB)
+        
+        if cordA[0] > cordB[0]:
+            self.just_move_diag( round((cordA[0] - cordB[0]) / 2) , round((cordA[1] - cordB[1]) / 2) )
+        else:
+            self.just_move_diag( round((cordB[0] - cordA[0]) / 2) , round((cordB[1] - cordA[1]) / 2) )
+        
+    def just_move(self, stepX, stepY):
+        
+        self.enable()
+    
+        self.motorX.motor_go(stepX < 0, "Half", abs(stepX), 0.0005, False, 0.05)
+        self.motorY.motor_go(stepY < 0, "Half", abs(stepY), 0.0005, False, 0.05)
+        
+        self.position = [ self.position[0] + stepX, self.position[1] + stepY ]
+        
+        self.disable()
+        
+    def just_move_diag(self, stepX, stepY):
+        
+        self.enable()
+    
+        self.motorX.motor_go_sync(stepX < 0, stepY < 0, "Half", abs(stepX), 0.0005, False, 0.05)
+        
+        self.position = [ self.position[0] + stepX, self.position[1] + stepY ]
+        
+        self.disable()
+    
+    
+    #Coordinate input is a string (i.e. "a8")
+    #Return tuple ordered (X, Y) of chess coordinate converted into motor coordinates
+    def coord_to_steps(self, coordinate):
+        return ( int( self.column_to_step_dict[coordinate[0]] ), int( self.row_to_step_dict[coordinate[1]] ))
+    
+    def getNode(self, coord):
+        return ( spot_to_column[ column_to_spot[coord[0]] - 1 ], "" + ( int(coord[0]) + 1 ) )
+    
+    def move_is_diagonal(self, origin, destination):
+        o = ( self.column_to_spot[origin[0]], int(origin[1]) )
+        d = ( self.column_to_spot[destination[0]], int(destination[1]) )
+        
+        return abs(o[0] - d[0]) == abs(o[1] - d[1])
+    
+    
+    def delta_coordinate(self, origin, destination):
+        o = self.coord_to_steps(origin)
+        d = self.coord_to_steps(destination)
+        return ( o[0] - d[0], o[1] - d[1] )
+    
+    
+    def delta_go_to(self, destination):
+        d = self.coord_to_steps(destination)
+        return ( self.position[0] - d[0], self.position[1] - d[1] )
+    
+    
+    def delta_steps(self, destination):
+        return (self.position[0] - destination[0], self.position[1] - destination[1])
+    
+    
+    def disable(self):
+        GPIO.output(self.xEnablePin, GPIO.HIGH)
+        GPIO.output(self.yEnablePin, GPIO.HIGH)
+    
+    def enable(self):
+        GPIO.output(self.xEnablePin, GPIO.LOW)
+        GPIO.output(self.yEnablePin, GPIO.LOW)
+        
+    def EMSet(self, enabled):
+        GPIO.output(self.EMPin, enabled)
+        
+    def positionset(self, pos):
+        self.position = pos
+    
+    def getPosition(self):
+        return self.position
+    
+    
 
 # ===================== MAIN ===============================
 
 
-if __name__ == '__main__':
-    importtest("main")
-else:
-    importtest("Imported {}".format(__name__))
+MotorSys = motorSys()
+MotorSys.push_move("h8", "x8", True)
+
+
+
+#print(test.delta_coordinate("a8", "b7"))
+
+
+
+
+

@@ -5,7 +5,7 @@ from shadowRealm import *
 from chess.engine import *
 #import led as led
 #import lcd_main as lcd
-#import motorlib
+import motorlib
 
 
 class Log:
@@ -43,11 +43,6 @@ class Log:
             'q': B_QUEEN,
             'k': B_KING,
         }
-        
-    #Coordinate input is a string (i.e. "a8")
-    #Return tuple ordered (X, Y) of chess coordinate converted into motor coordinates
-    def coord_to_steps(self, coordinate):
-        return (self.column_to_step_dict[coordinate[0].lower()], self.row_to_step_dict[coordinate[1].lower()])
 
     
     def makeMove(self, move): #make a normal move or review 
@@ -155,7 +150,7 @@ class Log:
         destination = move[2:4]
         piece = None
 
-        #MotorCode.push_move(origin, destination, True)
+        motorlib.MotorSys.push_move(origin, destination, True)
         if origin[0] in self.shadow.board.COLUMN: #if the shadowboard is involved
             piece = self.shadow.board.empty_square(origin)
             sq = chess.parse_square(destination)
@@ -176,10 +171,6 @@ class Log:
         destination = move[2:4] #check your assumptions! not always will be string be 4!
         currmove = chess.Move.from_uci(move)
         
-        
-        
-        
-        
 
         if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove):
             lcd.printMessage(["Capture:" + move,self.getCondensedStatusCurrent()])
@@ -190,30 +181,30 @@ class Log:
 
         if self.getPiece(origin) == "N" or self.getPiece(origin) == "n":
             print("this is a knight move: ", (origin, destination, True))
-            #MotorCode.push_move(origin, destination, True)
+            motorlib.MotorSys.push_move(origin, destination, True)
 
         elif self.board.is_castling(currmove):
             lcd.printMessage(["Castleing:",self.getCondensedStatusCurrent()])
             print("this is a castle: ", (origin, destination, False))
-            #MotorCode.push_move(origin, destination, False) #move the king normally  
+            motorlib.MotorSys.push_move(origin, destination, False) #move the king normally  
 
             if destination[0] == "c": #move the rook abnormally
                 print("accompaning rook move: ", ("a" + destination[1], "d" + destination[1], True))
-                #MotorCode.push_move("a" + destination[1], "d" + destination[1], True) 
+                motorlib.MotorSys.push_move("a" + destination[1], "d" + destination[1], True) 
             else:
                 print("accompaning rook move: ", ("h" + destination[1], "f" + destination[1], True))
-                #MotorCode.push_move("h" + destination[1], "f" + destination[1], True)
+                motorlib.MotorSys.push_move("h" + destination[1], "f" + destination[1], True)
 
         elif self.board.is_en_passant(currmove):
             capturedpawnloc = destination[0] + origin[1] #move the piece normally
-            #MotorCode.push_move(origin, destination, False) 
+            motorlib.MotorSys.push_move(origin, destination, False) 
             self.shadow.banash(self.getPiece(capturedpawnloc)) #move the shadowrealm
             print("this is en_passant 1st move motor code: ", (origin, destination, False))
                 
         else: #under a normal move
             lcd.printMessage(["Move:" + move,self.getCondensedStatusCurrent()])
             print("this is a normal move: ", (origin, destination, False))
-            #MotorCode.push_move(origin, destination, False)
+            motorlib.MotorSys.push_move(origin, destination, False)
 
             if len(move) == 5: #if the move is a promotion move
                 promotion_piece = str(move[-1])
