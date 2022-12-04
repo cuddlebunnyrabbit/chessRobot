@@ -6,8 +6,9 @@ import led as led
 import lcd_main as lcd
 import motorlib
 
+
 class Log:
-    def __init__(self):
+    def __init__(self): #Initialize constents 
         self.game = chess.pgn.Game()
         self.node = None
         self.board = chess.Board()
@@ -42,16 +43,14 @@ class Log:
             'k': B_KING,
         }
         
-        
-
-    
-    def makeMove(self, move): #make a normal move or review 
-
+    #input: String(move) check if move from user or review game is normal move. 
+    #take corret actions if it is
+    def makeMove(self, move): 
         currmove = chess.Move.from_uci(move)
         if currmove in self.board.legal_moves: 
             led.blue()
             self.motorMove(move) #do not continue until motorMove has terminated! 
-            if self.node == None: #fist move
+            if self.node == None: #fist move since game adds variation instead of node 
                 self.node = self.game.add_variation(currmove)
             else:
                 self.node = self.node.add_variation(currmove)
@@ -60,12 +59,13 @@ class Log:
             lcd.printMessage(["Illegal move", "Try again"])
             led.red()
 
-    def get_review_iter(self, pgn): #helper method to get the iter for review and spectate
+    #gets chess.pgn object and helper method to get the iter for review and spectate
+    def get_review_iter(self, pgn): 
         temp = chess.pgn.read_game(open(pgn)).mainline_moves()
         temp = iter(temp)
         return temp
 
-    #helpter methods used by motormove!
+    #input: String(location) helpter methods used to get the piece from array of the square like 'd5'
     def getPiece(self, location): #location should be d5 for example
         square_name = chess.parse_square(location)
         piece = self.board.piece_at(square_name)
@@ -73,9 +73,9 @@ class Log:
             return piece.symbol()
         return None #returns Q or q! 
 
-
     ########### helper methods for reset 
-    def find_storage(self, currloc): #should give the temp storage of a piece 
+    #input: String(currloc) should give the temp storage of a piece
+    def find_storage(self, currloc): 
         for rank in [3, 4, 5, 6]:
             file = currloc[0]
             square = file + str(rank)
@@ -89,7 +89,8 @@ class Log:
                 if not self.getPiece(square):
                     return square
 
-    def find_home(self, piece): #returns the location that the piece should be stored in permenently
+    #input: String(piece) returns the location that the piece should be stored in permanently
+    def find_home(self, piece): 
         home = self.constants_dict[piece]
         for loc in home:
             occupying_piece = self.getPiece(loc)
@@ -97,9 +98,9 @@ class Log:
                 return loc
         return None
 
-    def clean_house(self): #returns a clean 1, 2, 7, 8 ranks 
+    #returns a clean 1, 2, 7, 8 ranks
+    def clean_house(self):  
         for rank in [1, 2, 7, 8]:
-            #print("----------------------------------------------------- rank", rank)
             for file in chess.FILE_NAMES:
                 location = file + str(rank)
                 piece = self.getPiece(location)
@@ -118,9 +119,13 @@ class Log:
                         storage = self.find_storage(location)
                         self.motorReset(location + storage)
                         #print("I found temp storage location at ", storage, "while i am currently at ", location)
-    def reset(self): #reset your own board before you reset the other board 
-        self.clean_house()
+    
+    #method for chessDaemon to reset the board when necessary. 
+    #Note, no way to terminate during the reset process, only after all has been reset can we terminate.
+    def reset(self): 
+        self.clean_house() #clean the board before resetting shadowrealm
 
+        #reset the normal board 
         for rank in [3, 4, 5, 6]:
             for file in chess.FILE_NAMES:
                 location = file + str(rank)
@@ -130,6 +135,7 @@ class Log:
                     self.motorReset(location + home)
                     self.getFullStatus()
 
+        #reset the shadowboard 
         for row in self.shadow.board.ROW:
             for col in self.shadow.board.COLUMN:
                 location = col + str(row)
@@ -144,19 +150,21 @@ class Log:
         #restart the game from new 
     #helper methods for reset 
 
-    #methods for motor in diff conditions
+    #input: String(move) takes a full move like d2d4 and 
     def motorReset(self, move): # this is used to move the pieces during resets
         origin = move[:2]
         destination = move[2:4]
         piece = None
-
         motorlib.MotorSys.push_move(origin, destination, True)
-        if origin[0] in self.shadow.board.COLUMN: #if the shadowboard is involved
+
+        #reset the shadowboard 
+        if origin[0] in self.shadow.board.COLUMN: 
             piece = self.shadow.board.empty_square(origin)
             sq = chess.parse_square(destination)
             pieceThing = chess.Piece.from_symbol(piece)
             self.board.set_piece_at(sq, pieceThing)
-            
+        
+        #reset the normal board 
         else:
             piece = self.getPiece(origin)
             original_sq = chess.parse_square(origin)
@@ -165,19 +173,19 @@ class Log:
             pieceThing = chess.Piece.from_symbol(piece)
             self.board.set_piece_at(destination_sq, pieceThing)
 
-    #motorMove: this is used to make a normal move under normal circumstances like play and engine play
+    #String(move) input 
+    #motorMove: this is used to make a normal move and interact with movement engine 
+    #under normal circumstances like play and engine play
     def motorMove(self, move):
         origin = move[:2]
         destination = move[2:4] #check your assumptions! not always will be string be 4!
         currmove = chess.Move.from_uci(move)
-        
-
         if self.board.is_capture(currmove) and not self.board.is_en_passant(currmove):
             lcd.printMessage(["Capture:" + move,self.getCondensedStatusCurrent()])
             self.shadow.banash(self.getPiece(destination), destination)
             print("this is a normal capture: ", (destination, self.getPiece(destination)))
-            #NOTE: SELF.GETPIECE IS SHOWN AS "P" OR LOWERCASE 
-            # BUT IT IS A PIECE OBJECT NOT A STRING
+            #NOTE: SELF.GETPIECE IS SHOWN AS "P" OR LOWERCASE
+            #BUT IT IS A PIECE OBJECT NOT A STRING
 
         if self.getPiece(origin) == "N" or self.getPiece(origin) == "n":
             print("this is a knight move: ", (origin, destination, True))
@@ -197,10 +205,10 @@ class Log:
 
         elif self.board.is_en_passant(currmove):
             capturedpawnloc = destination[0] + origin[1] #move the piece normally
-            motorlib.MotorSys.push_move(origin, destination, False) 
-            coordinate = self.shadow.banash(self.getPiece(capturedpawnloc), capturedpawnloc) #move the shadowrealm
-            
+            #MotorCode.push_move(origin, destination, False) 
+            self.shadow.banash(self.getPiece(capturedpawnloc)) #move the shadowrealm
             print("this is en_passant 1st move motor code: ", (origin, destination, False))
+            self.shadow.banash(self.getPiece(capturedpawnloc)) #move the shadowrealm
                 
         else: #under a normal move
             lcd.printMessage(["Move:" + move,self.getCondensedStatusCurrent()])
@@ -216,20 +224,22 @@ class Log:
                 shadowRealm.reinstate(promotion_piece, destination)
                 print("this is a promotion: ", promotion_piece)
                 self.shadow.reinstate(promotion_piece)
-    #methods for motor in diff conditions 
 
+    #methods for motor in diff conditions
 
-    def export(self): #methods for outside daemon and also for reset  
+    #methods for chessDaemon and export files 
+    def export(self):  
         print(self.game, file=open("export.pgn", "w"), end="\n\n")
         print(self.game, file=open("export_log.pgn", "a"), end="\n\n")   
 
+    #methods for chessDaemon to resetart the game during restart
     def restart_game(self): #used by reset as well as other functions
         self.game = chess.pgn.Game()
         self.board = chess.Board()
         self.node = None
 
-
     #communicates with lcd 
+    #get the side that moves after this current move 
     def getNextColor(self):
         #node.turn() returns the true if the next move is white 
         #node.turn() returns false if the next move is black
@@ -242,38 +252,28 @@ class Log:
                 return "W"
             return "B"
 
+    #gets the turn of the game
     def getTurn(self): #increments after black moves. starts at 1
         return str(self.board.fullmove_number)
 
+    #get condensed status of the current move that is being executed to display 
     def getCondensedStatusCurrent(self):
         return "Current Move:" + self.getTurn() + "." + self.getNextColor()
     
+    #get condensed status of the next move that is being executed to display 
     def getCondensedStatusNext(self):
         return "Next Move:" + self.getTurn() + "." + self.getNextColor()
 
+    #get full status of the current move only for testing purposes not for lcd display 
     def getFullStatus(self): #helper method for chessDaemon
         print(self.shadow.board)
         print(self.getGame())
         print(self.getBoard())
 
-    #def getGameStatus(self):
-        #return #who won the game?
-
+    #get full status of the board on only for testing purposes not for lcd display 
     def getBoard(self):
         return self.board
 
+    #get full game notation only for testing purposes not for lcd display 
     def getGame(self):
         return self.game
-
-
-'''
-l = Log()
-pgn = open("kasparov_topalov_1999.pgn")
-review = chess.pgn.read_game(pgn).mainline_moves()
-review = iter(review)
-
-for thing in review:
-    l.makeMove(str(thing))
-
-l.export()
-'''

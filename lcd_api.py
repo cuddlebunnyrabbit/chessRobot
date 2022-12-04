@@ -1,4 +1,5 @@
 """Provides an API for talking to HD44780 compatible character LCDs."""
+#Source: https://www.circuitbasics.com/raspberry-pi-i2c-lcd-set-up-and-programming
 
 import time
 

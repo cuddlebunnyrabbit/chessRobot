@@ -1,6 +1,7 @@
 from gpiozero import RGBLED
 from time import sleep
 
+#list constants for the colors
 RED = (0,1,1)
 BLUE = (1,1,0)
 GREEN = (1,0,1)
@@ -11,6 +12,7 @@ OFF = (1,1,1)
 
 led = RGBLED(17,18,16,active_high=False)
 
+#functions that sets the light as certain conditions
 def green():
     led.color = GREEN
 
@@ -18,7 +20,6 @@ def red():
     led.color = RED
     sleep(1)
 
-    
 def blue():
     led.color = BLUE
     
@@ -40,12 +41,3 @@ def flashing():
         
 def off():
     led.color = OFF
-    
-
-'''
-led = Led()
-led.flashing()
-
-print("I have finished execution")
-
-'''

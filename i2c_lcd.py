@@ -1,4 +1,5 @@
 """Implements a HD44780 character LCD connected via PCF8574 on I2C."""
+#Source: https://www.circuitbasics.com/raspberry-pi-i2c-lcd-set-up-and-programming
 
 import time
 

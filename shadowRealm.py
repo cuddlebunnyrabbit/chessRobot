@@ -7,6 +7,7 @@ class shadowRealm:
     def __init__(self):
         self.board = self.shadowBoard()
 
+    #add a piece from to shadowrealm normal board and tell motorcode what to do 
     def banash(self, piece, origin): 
         #shadowRealm.banash(destination, self.getPiece(destination))
         coordinate = self.board.determine_coordinates(piece, True)
@@ -14,6 +15,7 @@ class shadowRealm:
         print(self.board)
         motorlib.MotorSys.push_move(origin, coordinate, True)
 
+    #add a piece to normal board from shadworealm 
     def reinstate(self, piece, destination): #only used for promotion
         coordinate = self.board.determine_coordinates(piece, False)
         if coordinate: #if the coordinate even exists, you can get something moved to the board
@@ -29,7 +31,7 @@ class shadowRealm:
         def __init__(self):
             #initialize and make coordinates for each
             self.ROW = [1, 2, 3, 4, 5, 6, 7, 8]
-            self.COLUMN = ['x', 'y', 'z']
+            self.COLUMN = ['x', 'y']
 
             #White + Black starts are in the middle 
             self.WHITE_START = 4
@@ -46,6 +48,7 @@ class shadowRealm:
             self.data = []
             self.populate()
 
+        #populate all the squares in the array with empty squares 
         def populate(self):
             for i in range(len(self.ROW)):
                 col = []
