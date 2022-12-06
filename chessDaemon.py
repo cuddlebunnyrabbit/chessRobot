@@ -2,7 +2,7 @@ from chess import *
 
 #import os
 #import chess.pgn
-#import lcd_main as lcd
+import lcd_main as lcd
 
 from log import *
 import speech_recognition as sr
@@ -146,7 +146,7 @@ class Daemon:
             audio = None
             TIME_LIMIT = 5
             try:
-                self.r.energy_threshold = 1000
+                self.r.energy_threshold = 2000
                 self.r.adjust_for_ambient_noise(source)
                 audio = self.r.listen(source, TIME_LIMIT, phrase_time_limit= TIME_LIMIT)
                 try:

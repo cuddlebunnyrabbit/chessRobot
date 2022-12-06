@@ -577,14 +577,14 @@ class motorSys():
         }
         
         self.row_to_step_dict = {
-            "1": 0,
-            "2": 275,
-            "3": 550,
-            "4": 825,
-            "5": 1105,
-            "6": 1390,
-            "7": 1675,
-            "8": 1955
+            "1": 150,
+            "2": 425,
+            "3": 700,
+            "4": 975,
+            "5": 1255,
+            "6": 1540,
+            "7": 1825,
+            "8": 2105
         }
         
         self.column_to_spot = {
@@ -641,8 +641,11 @@ class motorSys():
         
         self.EMSet(True)
         
+        time.sleep(0.5)
+        
         if self.move_is_diagonal(origin, destination):
             self.just_move_diag(-move[0], -move[1])
+            self.move_to_square(destination)
         else:
             self.move_to_square(destination)
             
@@ -652,6 +655,8 @@ class motorSys():
     def abnormalMove(self, origin, destination):
         
         self.move_to_square(origin)
+        
+        self.EMSet(True)
         
         isCapture = False
         
@@ -672,6 +677,8 @@ class motorSys():
                 
         else:
             self.move_to_square_diag(destination)
+            
+        self.EMSet(False)
         
             
     def move_to_square(self, destination):
@@ -787,8 +794,8 @@ class motorSys():
         
         self.enable()
     
-        self.motorX.motor_go(stepX < 0, "Half", abs(stepX), 0.0005, False, 0.05)
-        self.motorY.motor_go(stepY < 0, "Half", abs(stepY), 0.0005, False, 0.05)
+        self.motorX.motor_go(stepX < 0, "Half", abs(stepX), 0.0009, False, 0.05)
+        self.motorY.motor_go(stepY < 0, "Half", abs(stepY), 0.0009, False, 0.05)
         
         self.position = [ self.position[0] + stepX, self.position[1] + stepY ]
         
@@ -798,7 +805,7 @@ class motorSys():
         
         self.enable()
     
-        self.motorX.motor_go_sync(stepX < 0, stepY < 0, "Half", abs(stepX), 0.0005, False, 0.05)
+        self.motorX.motor_go_sync(stepX < 0, stepY < 0, "Half", abs(stepX), 0.0009, False, 0.05)
         
         self.position = [ self.position[0] + stepX, self.position[1] + stepY ]
         
@@ -861,6 +868,7 @@ class motorSys():
 
 MotorSys = motorSys()
 MotorSys.positionset([0, 0])
+MotorSys.EMSet(False)
 #MotorSys.push_move("a2", "a4", False)
 
 
