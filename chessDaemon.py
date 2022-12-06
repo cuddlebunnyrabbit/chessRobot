@@ -1,9 +1,5 @@
 from chess import *
-
-#import os
-#import chess.pgn
 import lcd_main as lcd
-
 from log import *
 import speech_recognition as sr
 import chess.engine 
@@ -12,8 +8,6 @@ from phrase import *
 from parser import *
 import led as led
 import os
-
-
 
 #daemon runs listing loop when activated
 class Daemon:
@@ -31,14 +25,7 @@ class Daemon:
             led.green()
             data = self.listen()
             print("data: ", data)
-
-            if self.gameOn and self.engine != False:
-                #if i am playing white and the mv rn black
-                if self.side != self.l.getNextColor(): 
-                    led.blue()
-                    result = self.engine.play(self.l.board, chess.engine.Limit(time=0.1))
-                    self.l.makeMove(result.move.uci())
-                    self.l.getFullStatus()
+            madeMove = False
 
             if data != None:
                 command = parse(cleanData(data))
@@ -52,23 +39,34 @@ class Daemon:
                         if command != None:
                             if self.engine != False:
                                 if self.side == self.l.getNextColor():
+                                    madeMove = True
                                     led.blue()
                                     self.l.makeMove(command)
                                     self.l.getFullStatus()
                             else:
+                                madeMove = True
                                 led.blue()
                                 self.l.makeMove(command)
                                 self.l.getFullStatus()
                         else:
                             led.blue()
                             
-            if self.gameOn and self.review != False:  # if the self is reviewing a game
-                try:
-                    nextmv = next(self.review)
-                    self.l.makeMove(str(nextmv))
-                    self.l.getFullStatus()
-                except:
-                    lcd.printMessage(["Depleted", "Game"])
+            if self.gameOn:
+                if self.engine != False and madeMove == False:
+                    #if i am playing white and the mv rn black
+                    if self.side != self.l.getNextColor(): 
+                        led.blue()
+                        result = self.engine.play(self.l.board, chess.engine.Limit(time=0.1))
+                        self.l.makeMove(result.move.uci())
+                        self.l.getFullStatus()
+
+                if self.review != False:  # if the self is reviewing a game
+                    try:
+                        nextmv = next(self.review)
+                        self.l.makeMove(str(nextmv))
+                        self.l.getFullStatus()
+                    except:
+                        lcd.printMessage(["Depleted", "Game"])
 
     #input: String(phrase) determinds the action related for each key phrase
     def checkKeyPhrase(self, phrase):
