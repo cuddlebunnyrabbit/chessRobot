@@ -82,7 +82,7 @@ class Log:
             #print(square)
             if not self.getPiece(square):
                 return square
-        
+         
         for rank in [3, 4, 5, 6]:
             for file in chess.FILE_NAMES:
                 square = file + str(rank)
@@ -145,10 +145,13 @@ class Log:
                     self.motorReset(location + home)
                     self.getFullStatus()
 
+        self.true_zero()
         self.export()
         self.restart_game()
         #restart the game from new 
     #helper methods for reset 
+    def true_zero():
+        motorlib.move_to_steps([0,0])
 
     #input: String(move) takes a full move like d2d4 and 
     def motorReset(self, move): # this is used to move the pieces during resets

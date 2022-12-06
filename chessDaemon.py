@@ -75,6 +75,7 @@ class Daemon:
             self.gameOn = False
             self.review = False
             self.listening = False
+            self.l.true_zero()
         
             if self.l.game.next() != None:
                 self.l.export()
