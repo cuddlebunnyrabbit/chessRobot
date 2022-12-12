@@ -38,11 +38,9 @@ class ChessTimer(object):
 
     return newreftime - oldreftime
 
-
   # Get current task
   def current_task(self):
     return self._current_task
-
 
   # Switch tasks
   # returns the elapsed time from the current task (before the switch)
@@ -72,7 +70,6 @@ class ChessTimer(object):
     value = self._timers[task]
     if task == self._current_task:
       value += self._elapsed(reset)
-
     if reset:
       self._timers[task] = 0.0
 

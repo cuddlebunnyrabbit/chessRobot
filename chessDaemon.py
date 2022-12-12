@@ -6,6 +6,7 @@ import chess.engine
 
 from phrase import *
 from parser import *
+import chessClock
 import led as led
 import os
 
@@ -20,6 +21,9 @@ class Daemon:
         self.engine = False
         self.side = None
 
+        countdown_thread = threading.Thread(target = self.l.clock.tick)
+        countdown_thread.start()
+
         #while not terminated, always listening
         while self.listening:
             led.green()
@@ -31,6 +35,7 @@ class Daemon:
                 command = parse(cleanData(data))
                 #print("This is what I parsed:", str(command))
                 if command in key_phrase: #checks if you have key command
+                    self.l.clock.end()
                     led.flashing()
                     self.checkKeyPhrase(command)
                 else:
@@ -76,6 +81,7 @@ class Daemon:
             self.review = False
             self.listening = False
             self.l.true_zero()
+            self.l.clock.restart()
         
             if self.l.game.next() != None:
                 self.l.export()
@@ -85,10 +91,12 @@ class Daemon:
             lcd.printMessage(["Resume Game", self.l.getCondensedStatusNext()])
             self.l.getFullStatus()
             self.gameOn = True
+            self.l.clock.pause()
             
         elif phrase == "pause":
             self.gameOn = False
             lcd.printMessage(["Paused Game", self.l.getCondensedStatusNext()])
+            self.l.clock.resume()
             
         elif phrase == "reset":
             if self.gameOn:

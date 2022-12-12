@@ -5,6 +5,7 @@ from chess.engine import *
 import led as led
 import lcd_main as lcd
 import motorlib
+import chessClock
 
 class Log:
     def __init__(self): #Initialize constents 
@@ -12,6 +13,7 @@ class Log:
         self.node = None
         self.board = chess.Board()
         self.shadow = shadowRealm()
+        self.clock = chessClock.ChessClock()
         
         W_PAWN = ['a2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2', 'h2']
         W_ROOK = ['a1', 'h1']
@@ -49,12 +51,17 @@ class Log:
         currmove = chess.Move.from_uci(move)
         if currmove in self.board.legal_moves: 
             led.blue()
+            self.clock.pause()
             self.motorMove(move) #do not continue until motorMove has terminated! 
+            self.clock.resume()
+
             if self.node == None: #fist move since game adds variation instead of node 
                 self.node = self.game.add_variation(currmove)
             else:
                 self.node = self.node.add_variation(currmove)
+            self.clock.pressClock()
             self.board.push_uci(move) 
+            
         else:
             lcd.printMessage(["Illegal move", "Try again"])
             led.red()
@@ -239,6 +246,7 @@ class Log:
         self.game = chess.pgn.Game()
         self.board = chess.Board()
         self.node = None
+        self.clock.restart()
 
     #communicates with lcd 
     #get the side that moves after this current move 
