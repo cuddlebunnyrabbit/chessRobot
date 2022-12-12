@@ -2,6 +2,7 @@ import motorlib
 import time
 
 motorlib.MotorSys.disable()
+'''
 motorlib.MotorSys.move_to_square("h1")
 
 motorlib.MotorSys.EMSet(True)
@@ -10,7 +11,7 @@ motorlib.MotorSys.move_to_square("g1")
 motorlib.MotorSys.EMSet(False)
 
 motorlib.MotorSys.move_to_steps([0, 0])
-
+'''
 
 
 '''

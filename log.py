@@ -157,8 +157,8 @@ class Log:
         self.restart_game()
         #restart the game from new 
     #helper methods for reset 
-    def true_zero():
-        motorlib.move_to_steps([0,0])
+    def true_zero(self):
+        motorlib.MotorSys.move_to_steps([0,0])
 
     #input: String(move) takes a full move like d2d4 and 
     def motorReset(self, move): # this is used to move the pieces during resets

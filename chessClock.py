@@ -1,6 +1,7 @@
 import time 
 import ChessTimer
-#import lcd_main as lcd
+import lcd_main as lcd
+from multiprocessing import shared_memory
 
 
 class ChessClock:
@@ -16,13 +17,18 @@ class ChessClock:
         #give white and black initializations 
         self.side = True #True means white is moving right now and clock is ticking rn  
         self.printing = True
-        self.working = True
 
         self.pressClock()
         self.pressClock()
         
+        self.shm_b = shared_memory.SharedMemory(name='i_hate_this', create=False, size=10)
+        print("I just ran shm b")
+        print(self.shm_b.buf[0])
+        #self.shm_b.buff[0]
+        
     def pressClock(self): #press clock changes the sides each time 
         # the start call press clock to start as white
+        print("I have pressed clock---------------------------------------------------------")
         if self.side:
             self.increment(True)
             self.timer.switch_to("Black") #after white press clock it is blacks turn to move 
@@ -36,15 +42,17 @@ class ChessClock:
         
     def pause(self):
         self.timer.switch_to("Pause")
-        #self.switch_turn() #switch the turn to self again 
-        self.working = False
+        #print("swtich t o pause clapsaodijfskdfj;alsdkfj;slakdjf;alskdjf;slakjf")
+        #self.switch_turn() #switch the turn to self again
+        self.shm_b.buf[0] = False
+        #self.working = False
 
     def resume(self):
         if self.side:
             self.timer.switch_to("White")
         else:
             self.timer.switch_to("Black")
-        self.working = True
+        self.shm_b.buff[0] = True
 
     def increment(self, side):
         if side:
@@ -65,28 +73,27 @@ class ChessClock:
             return '%d:%02d:%02d' % (hour, min, sec)
 
     def restart(self):
-        self.timer.all_elapsed_time(self, reset=True)
+        self.timer.all_elapsed_time(reset=True)
         self.whiteTime = self.universalTime * 60
         self.blackTime = self.universalTime * 60
         self.side = True
-        self.printing = True 
+        self.working = True
 
     def __repr__(self):
         timedict = self.timer.all_elapsed_time()
-        print("REPR WHITE TIME:", self.whiteTime)
-
         wtime = round(self.whiteTime - timedict["White"], 2)
         btime = round(self.blackTime - timedict["Black"], 2)
         message = ['W:' + str(self.convert(wtime)),'B:' + str(self.convert(btime))]
-
-        print("W:" + str(self.convert(wtime)) + "\n" + "B:" + str(self.convert(btime)))
+        #print("W:" + str(self.convert(wtime)) + "\n" + "B:" + str(self.convert(btime)))
         return message
 
     def tick(self):
         while self.printing:
-            #lcd.printMessage(self.__repr__())
-            if self.working:
+            print("buf is: ", self.shm_b.buf[0])
+
+            if self.shm_b.buf[0]:
                 print(self.__repr__())
+                lcd.printMessage(self.__repr__())
                 time.sleep(1)
 
     def end(self):

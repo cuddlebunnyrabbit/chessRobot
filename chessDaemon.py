@@ -1,31 +1,37 @@
 from chess import *
 import lcd_main as lcd
-from log import *
+
 import speech_recognition as sr
 import chess.engine 
 
 from phrase import *
 from parser import *
-import chessClock
+
 import led as led
 import os
 import motorlib
-
-
+import multiprocessing
+from multiprocessing import shared_memory
+from log import *
 
 #daemon runs listing loop when activated
 class Daemon:
     def __init__(self):
         self.r = sr.Recognizer()
-        self.l = Log()
+        
         self.listening = True
         self.gameOn = True
         self.review = False
         self.engine = False
         self.side = None
 
-        countdown_thread = threading.Thread(target = self.l.clock.tick)
-        countdown_thread.start()
+        self.shm_a = shared_memory.SharedMemory(name='i_hate_this', create=False, size=10)
+        self.shm_a.buf[0] = True
+        
+        self.l = Log()
+        self.countdown_processing = multiprocessing.Process(target = self.l.clock.tick)
+        self.countdown_processing.start()
+        #self.buffer[0] = self.l.clock.working
 
         #while not terminated, always listening
         while self.listening:
@@ -38,7 +44,7 @@ class Daemon:
                 command = parse(cleanData(data))
                 #print("This is what I parsed:", str(command))
                 if command in key_phrase: #checks if you have key command
-                    self.l.clock.end()
+                    self.l.clock.pause()
                     led.flashing()
                     self.checkKeyPhrase(command)
                 else:
@@ -84,7 +90,10 @@ class Daemon:
             self.review = False
             self.listening = False
             self.l.true_zero()
-            self.l.clock.restart()
+            self.l.clock.end()
+            self.countdown_processing.terminate()
+            #self.shm_a.close()
+            #self.shm_a.unlink()
         
             if self.l.game.next() != None:
                 self.l.export()
@@ -110,10 +119,10 @@ class Daemon:
             else:
                 led.blue()
                 lcd.printMessage(["Reseting Game","Plz be patient"])
-                self.l.reset()
                 self.review = False #stops reviewing
                 self.engine = False
                 self.side = None
+                self.l.reset()
 
         elif phrase == "spectate":
             if self.review == False: 
