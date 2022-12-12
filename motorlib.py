@@ -555,8 +555,11 @@ class motorSys():
         self.motorY = A4988Nema(22, 23, (25, 25, 25), "DRV8825")
         self.motorX.setALTPins(22, 23)
         
-        self.xEnablePin = 24 #Enable pin for force stopping flow of power to the x stepper motor
-        self.yEnablePin = 26 # Enable pin for force stopping flow of power to the y stepper motor
+        self.xEnablePin = 26 #Enable pin for force stopping flow of power to the x stepper motor
+        self.yEnablePin = 24 # Enable pin for force stopping flow of power to the y stepper motor
+        
+        self.xOffset = 0
+        self.yOffset = 0
         
         self.position = [0, 0]
         self.position_coord = ["h", "1"]
@@ -564,27 +567,27 @@ class motorSys():
         self.EMPin = 21
         
         self.column_to_step_dict = {
-            "h": 45,
-            "g": 330,
-            "f": 600,
-            "e": 880,
-            "d": 1160,
-            "c": 1435,
-            "b": 1710,
-            "a": 1985,
-            "x": 1985,
-            "y": 1985
+            "h": 0,
+            "g": 280,
+            "f": 560,
+            "e": 840,
+            "d": 1120,
+            "c": 1400,
+            "b": 1680,
+            "a": 1960,
+            "x": 1960,
+            "y": 1960
         }
         
         self.row_to_step_dict = {
             "1": 150,
-            "2": 425,
-            "3": 700,
-            "4": 975,
-            "5": 1255,
-            "6": 1540,
-            "7": 1825,
-            "8": 2105
+            "2": 480,
+            "3": 760,
+            "4": 1040,
+            "5": 1320,
+            "6": 1600,
+            "7": 1880,
+            "8": 2160
         }
         
         self.column_to_spot = {

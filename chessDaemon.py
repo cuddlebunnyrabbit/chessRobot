@@ -9,6 +9,9 @@ from parser import *
 import chessClock
 import led as led
 import os
+import motorlib
+
+
 
 #daemon runs listing loop when activated
 class Daemon:
