@@ -24,9 +24,12 @@ while listening:
                 data = r.recognize_google(audio) #convert audio to text
                 print('I Heard: {}'.format(data))
             except:
+                data = None
                 print("no recognition")
         except:
             print("none here")
+
+    print("DATA is this rn: ", data)
 
     if data == "terminate":
         print("terminated ")
@@ -39,7 +42,8 @@ while listening:
         
     if data == "resume":
         clock.resume()
-        countdown_thread.start()
-        break
+
+    if data == "capture":
+        clock.pressClock()
 
 

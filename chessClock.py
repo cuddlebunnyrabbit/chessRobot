@@ -1,6 +1,5 @@
 import time 
 import ChessTimer
-import concurrent.futures
 #import lcd_main as lcd
 
 
@@ -15,18 +14,18 @@ class ChessClock:
         self.blackTime = self.universalTime * 60 - self.inc
         
         #give white and black initializations 
-        self.side = True
+        self.side = True #True means white is moving right now and clock is ticking rn  
         self.printing = True
+        self.working = True
 
         self.pressClock()
         self.pressClock()
-
         
     def pressClock(self): #press clock changes the sides each time 
         # the start call press clock to start as white
         if self.side:
             self.increment(True)
-            self.timer.switch_to("Black")
+            self.timer.switch_to("Black") #after white press clock it is blacks turn to move 
         else:
             self.increment(False)
             self.timer.switch_to("White")
@@ -37,22 +36,21 @@ class ChessClock:
         
     def pause(self):
         self.timer.switch_to("Pause")
-        self.switch_turn() #paused so you need to switch back the turn
-        self.printing = False
+        #self.switch_turn() #switch the turn to self again 
+        self.working = False
 
     def resume(self):
         if self.side:
             self.timer.switch_to("White")
         else:
             self.timer.switch_to("Black")
-        self.printing = True
-        self.tick()
+        self.working = True
 
     def increment(self, side):
         if side:
-            self.whiteTime += self.inc
-        else:
             self.blackTime += self.inc
+        else:
+            self.whiteTime += self.inc
 
     def convert(self, seconds): #source: https://www.geeksforgeeks.org/python-program-to-convert-seconds-into-hours-minutes-and-seconds/
         min, sec = divmod(seconds, 60)
@@ -75,11 +73,10 @@ class ChessClock:
 
     def __repr__(self):
         timedict = self.timer.all_elapsed_time()
+        print("REPR WHITE TIME:", self.whiteTime)
 
         wtime = round(self.whiteTime - timedict["White"], 2)
         btime = round(self.blackTime - timedict["Black"], 2)
-        #print("hhhhhhhhhhhhhwtime: ", wtime)
-        #print("btime: ", btime)
         message = ['W:' + str(self.convert(wtime)),'B:' + str(self.convert(btime))]
 
         print("W:" + str(self.convert(wtime)) + "\n" + "B:" + str(self.convert(btime)))
@@ -88,8 +85,9 @@ class ChessClock:
     def tick(self):
         while self.printing:
             #lcd.printMessage(self.__repr__())
-            print(self.__repr__())
-            time.sleep(1)
+            if self.working:
+                print(self.__repr__())
+                time.sleep(1)
 
     def end(self):
         self.printing = False
