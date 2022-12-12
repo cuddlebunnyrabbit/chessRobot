@@ -13,6 +13,8 @@ from parser import *
 import led as led
 import os
 
+import motorlib
+
 
 
 #daemon runs listing loop when activated
@@ -77,6 +79,7 @@ class Daemon:
             self.gameOn = False
             self.review = False
             self.listening = False
+            motorlib.MotorSys.move_to_steps([0, 0])
         
             if self.l.game.next() != None:
                 self.l.export()
